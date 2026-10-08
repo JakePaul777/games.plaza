@@ -1,0 +1,14 @@
+# Target labels
+ prism-populate
+# Source files and their labels
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/CMakeFiles/prism-populate
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/CMakeFiles/prism-populate.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/CMakeFiles/prism-populate-complete.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-build.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-configure.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-download.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-install.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-mkdir.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-patch.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-test.rule
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/prism-populate-prefix/src/prism-populate-stamp/prism-populate-update.rule

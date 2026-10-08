@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/CMakeFiles/cimgui-populate"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/CMakeFiles/cimgui-populate.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/CMakeFiles/cimgui-populate-complete.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-build.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-configure.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-download.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-install.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-patch.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-test.rule"
+		},
+		{
+			"file" : "/home/maxwe/Ghostship/build-web/_deps/cimgui-subbuild/cimgui-populate-prefix/src/cimgui-populate-stamp/cimgui-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"cimgui-populate"
+		],
+		"name" : "cimgui-populate"
+	}
+}

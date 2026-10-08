@@ -1,0 +1,126 @@
+Determining size of int8_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_5bfd1
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_5bfd1.dir/INT8_T_LIBZIP.c.o -MF CMakeFiles/cmTC_5bfd1.dir/INT8_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_5bfd1.dir/INT8_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/INT8_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_5bfd1.dir/INT8_T_LIBZIP.c.o -o cmTC_5bfd1.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of uint8_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_e44ef
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_e44ef.dir/UINT8_T_LIBZIP.c.o -MF CMakeFiles/cmTC_e44ef.dir/UINT8_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_e44ef.dir/UINT8_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/UINT8_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_e44ef.dir/UINT8_T_LIBZIP.c.o -o cmTC_e44ef.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of int16_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_96f4c
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_96f4c.dir/INT16_T_LIBZIP.c.o -MF CMakeFiles/cmTC_96f4c.dir/INT16_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_96f4c.dir/INT16_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/INT16_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_96f4c.dir/INT16_T_LIBZIP.c.o -o cmTC_96f4c.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of uint16_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_b95eb
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_b95eb.dir/UINT16_T_LIBZIP.c.o -MF CMakeFiles/cmTC_b95eb.dir/UINT16_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_b95eb.dir/UINT16_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/UINT16_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_b95eb.dir/UINT16_T_LIBZIP.c.o -o cmTC_b95eb.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of int32_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_7c065
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_7c065.dir/INT32_T_LIBZIP.c.o -MF CMakeFiles/cmTC_7c065.dir/INT32_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_7c065.dir/INT32_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/INT32_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_7c065.dir/INT32_T_LIBZIP.c.o -o cmTC_7c065.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of uint32_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_243a4
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_243a4.dir/UINT32_T_LIBZIP.c.o -MF CMakeFiles/cmTC_243a4.dir/UINT32_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_243a4.dir/UINT32_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/UINT32_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_243a4.dir/UINT32_T_LIBZIP.c.o -o cmTC_243a4.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of int64_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_fa0e7
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_fa0e7.dir/INT64_T_LIBZIP.c.o -MF CMakeFiles/cmTC_fa0e7.dir/INT64_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_fa0e7.dir/INT64_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/INT64_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_fa0e7.dir/INT64_T_LIBZIP.c.o -o cmTC_fa0e7.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of uint64_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_5ada6
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_5ada6.dir/UINT64_T_LIBZIP.c.o -MF CMakeFiles/cmTC_5ada6.dir/UINT64_T_LIBZIP.c.o.d -o CMakeFiles/cmTC_5ada6.dir/UINT64_T_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/UINT64_T_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_5ada6.dir/UINT64_T_LIBZIP.c.o -o cmTC_5ada6.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of short passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_2384e
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_2384e.dir/SHORT_LIBZIP.c.o -MF CMakeFiles/cmTC_2384e.dir/SHORT_LIBZIP.c.o.d -o CMakeFiles/cmTC_2384e.dir/SHORT_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/SHORT_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_2384e.dir/SHORT_LIBZIP.c.o -o cmTC_2384e.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of int passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_cf977
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_cf977.dir/INT_LIBZIP.c.o -MF CMakeFiles/cmTC_cf977.dir/INT_LIBZIP.c.o.d -o CMakeFiles/cmTC_cf977.dir/INT_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/INT_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_cf977.dir/INT_LIBZIP.c.o -o cmTC_cf977.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of long passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_5cdcb
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_5cdcb.dir/LONG_LIBZIP.c.o -MF CMakeFiles/cmTC_5cdcb.dir/LONG_LIBZIP.c.o.d -o CMakeFiles/cmTC_5cdcb.dir/LONG_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/LONG_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_5cdcb.dir/LONG_LIBZIP.c.o -o cmTC_5cdcb.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of long long passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_0ac83
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_0ac83.dir/LONG_LONG_LIBZIP.c.o -MF CMakeFiles/cmTC_0ac83.dir/LONG_LONG_LIBZIP.c.o.d -o CMakeFiles/cmTC_0ac83.dir/LONG_LONG_LIBZIP.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/LONG_LONG_LIBZIP.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_0ac83.dir/LONG_LONG_LIBZIP.c.o -o cmTC_0ac83.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of off_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_3a6cb
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_3a6cb.dir/SIZEOF_OFF_T.c.o -MF CMakeFiles/cmTC_3a6cb.dir/SIZEOF_OFF_T.c.o.d -o CMakeFiles/cmTC_3a6cb.dir/SIZEOF_OFF_T.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/SIZEOF_OFF_T.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_3a6cb.dir/SIZEOF_OFF_T.c.o -o cmTC_3a6cb.js  --oformat=wasm  -sWASM=1 && :
+
+
+
+Determining size of size_t passed with the following output:
+Change Dir: '/home/maxwe/Ghostship/build-web/CMakeFiles/CMakeTmp'
+
+Run Build Command(s): /usr/bin/ninja -v cmTC_81bad
+[1/2] /home/maxwe/emsdk/upstream/emscripten/emcc -D__STDC_WANT_LIB_EXT1__=1  -std=gnu11 -MD -MT CMakeFiles/cmTC_81bad.dir/SIZEOF_SIZE_T.c.o -MF CMakeFiles/cmTC_81bad.dir/SIZEOF_SIZE_T.c.o.d -o CMakeFiles/cmTC_81bad.dir/SIZEOF_SIZE_T.c.o -c /home/maxwe/Ghostship/build-web/CMakeFiles/CheckTypeSize/SIZEOF_SIZE_T.c
+[2/2] : && /home/maxwe/emsdk/upstream/emscripten/emcc   CMakeFiles/cmTC_81bad.dir/SIZEOF_SIZE_T.c.o -o cmTC_81bad.js  --oformat=wasm  -sWASM=1 && :
+
+
+

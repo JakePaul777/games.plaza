@@ -1,0 +1,13 @@
+prefix=/home/maxwe/Ghostship/build-web/Torch
+exec_prefix=/home/maxwe/Ghostship/build-web/Torch
+libdir=/home/maxwe/Ghostship/build-web/Torch/lib
+sharedlibdir=/home/maxwe/Ghostship/build-web/Torch/lib
+includedir=/home/maxwe/Ghostship/build-web/Torch/include
+
+Name: zlib
+Description: zlib compression library
+Version: 1.3.1
+
+Requires:
+Libs: -L${libdir} -L${sharedlibdir} -lz
+Cflags: -I${includedir}

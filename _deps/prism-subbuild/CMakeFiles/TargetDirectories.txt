@@ -1,0 +1,3 @@
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/CMakeFiles/prism-populate.dir
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/CMakeFiles/edit_cache.dir
+/home/maxwe/Ghostship/build-web/_deps/prism-subbuild/CMakeFiles/rebuild_cache.dir
