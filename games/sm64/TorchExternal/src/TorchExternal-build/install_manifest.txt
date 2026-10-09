@@ -1,7 +1,0 @@
-/home/maxwe/Ghostship/build-web/Torch/lib/libtinyxml2.a
-/home/maxwe/Ghostship/build-web/Torch/lib/cmake/tinyxml2/tinyxml2-static-targets.cmake
-/home/maxwe/Ghostship/build-web/Torch/lib/cmake/tinyxml2/tinyxml2-static-targets-noconfig.cmake
-/home/maxwe/Ghostship/build-web/Torch/lib/cmake/tinyxml2/tinyxml2-config.cmake
-/home/maxwe/Ghostship/build-web/Torch/lib/cmake/tinyxml2/tinyxml2-config-version.cmake
-/home/maxwe/Ghostship/build-web/Torch/include/tinyxml2.h
-/home/maxwe/Ghostship/build-web/Torch/lib/pkgconfig/tinyxml2.pc

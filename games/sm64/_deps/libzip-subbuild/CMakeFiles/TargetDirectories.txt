@@ -1,3 +1,0 @@
-/home/maxwe/Ghostship/build-web/_deps/libzip-subbuild/CMakeFiles/libzip-populate.dir
-/home/maxwe/Ghostship/build-web/_deps/libzip-subbuild/CMakeFiles/edit_cache.dir
-/home/maxwe/Ghostship/build-web/_deps/libzip-subbuild/CMakeFiles/rebuild_cache.dir

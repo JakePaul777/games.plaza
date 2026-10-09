@@ -14,8 +14,7 @@ html, body{
 }
 
 button {
-    width: 200px;
-    height: 70px;
+    width: 300px;
     font-size: 40px;
     background-color: darkgrey;
     color:white;
