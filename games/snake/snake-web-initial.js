@@ -70,7 +70,7 @@ window.webSnake.resolveUrl = function(url) {
 
   //Only the game bundle gets the looser fingerprint treatment. The page pulls down several other
   //xjs chunks and none of them should ever be swapped for a local file.
-  if(!url.includes('/xjs/_/js/')) {return null;}
+  if(!url.includes('/xjs/_/js/') && !url.includes('/xjs/_/ss/')) {return null;}
 
   let fingerprint = getXjsFingerprint(url);
 

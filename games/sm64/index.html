@@ -1,20 +1,52 @@
-
-<!DOCTYPE html>
-<html>
-<!-- shamelessly taken off stack exchange :) -->
-<head>
-    <title>Super Mario 64</title>
+<!doctype html>
+<html lang="en-us">
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="icon" href="../favicon.png">
-    <link rel="stylesheet" href="../games.css">
-</head>
-<body>
-    <progress value="0" max="100" id="progress"></progress>
+    <title>Emscripten-Generated Code</title>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: black;
+      }
+      canvas.emscripten {
+        border: 0px none;
+        background-color: black;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
 
-    <canvas id="canvas" class="canvas" oncontextmenu="event.preventDefault()"></canvas>
-    <script type='text/javascript' src='/module.js'></script>
-    <!-- Special thanks to the n64-decomp team, the sm64-port team, and Emscripten -->
-    <script src="./sm64.us.js"></script>
-</body>
+    <script type='text/javascript'>
+      var canvasElement = document.getElementById('canvas');
+
+      canvasElement.addEventListener('webglcontextlost', (e) => {
+        alert('WebGL context lost. You will need to reload the page.');
+        e.preventDefault();
+      }, false);
+
+      var Module = {
+        print(...args) {
+          console.log(...args);
+        },
+        canvas: canvasElement,
+        setStatus(text) {},
+        totalDependencies: 0,
+        monitorRunDependencies(left) {}
+      };
+
+      window.onerror = (event) => {
+        console.error('Exception thrown, see JavaScript console');
+      };
+    </script>
+    <script async type="text/javascript" src="sm64.us.f3dex2e.js"></script>
+  </body>
 </html>
