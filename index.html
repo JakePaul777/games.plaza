@@ -3,23 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sus Game Site 23</title>
+    <title>RealGamez</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Games</h1>
     
-    <button onclick="window.location.href = '/games/sm64'">SM64</button>
-    <button onclick="window.location.href = '/games/eagler/1.21.11'">Eaglercraft New (broken)</button>
-    <button onclick="window.location.href = '/games/eagler/1.12.2'">Eaglercraft Old (good)</button>
-    <button onclick="window.location.href = '/games/snake'">Snake</button>
-
-    <img id="eww" src="media/eww.gif">
-    <img id="old" src="media/old.gif">
-    
+    <div id="games">
+        <button onclick="window.location.href = '/games/sm64'"><p>SM64</p></button>
+        <button onclick="window.location.href = '/games/eagler/1.12.2'"><p>Eaglercraft</p></button>
+        <button onclick="window.location.href = '/games/snake'"><p>Snake</p></button>
+    </div>
+    <div id="waves">
+        <div class="wave" id="wave1"></div>
+        <div class="wave" id="wave2"></div>
+        <div class="wave" id="wave3"></div>
+    </div>
     <script src="script.js"></script>
-    <script src="balls.js"></script>
-    <script src="sparkle.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Climate+Crisis:YEAR@1979&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </body>
 </html>
 
