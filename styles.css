@@ -1,135 +1,132 @@
 html, body{
     margin: 0;
     padding: 0;
-    color: white;
-    font-family: Montserrat;
+    font-family: Segoe UI;
     user-select: none;
     overflow: hidden;
-    background: #2e2e2e;
-    background: linear-gradient(45deg,rgb(29, 29, 29) 0%, rgba(0, 0, 0, 1) 100%);
-    width: 100%;       
-    height: 100%;
-}   
-
-h1 {
-    position: absolute;
-    left: 50%;
-    top: 200px;
-    transform: translate(-300%);
-    animation: mymove 2s;
-    animation-timing-function: ease-out;
-}
-
-@keyframes mymove {
-  from {top: -100px; opacity: 0;}
-  to {top: 200px;}
-}
-
-#games {
-    position: absolute;
+    background-image: url(media/bg.png);
+    background-size:cover;
+    background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
-    left: 50%;
-    top: 200px;
-    transform: translate(30%);
-    animation: opac 3s forwards;
-    opacity: 0;
-    animation-delay: 1s;
-    animation-timing-function: ease-out;
+    align-items: center;
+    width: 100%;
 }
 
-@keyframes opac {
-  from {opacity: 0;}
-  to {opacity: 100;}
+header {
+    display: flex;
+    width: 100%;
+    border-bottom: grey 2px solid;
+    height: 70px;
+    background: linear-gradient(0deg, rgb(219, 219, 219), white);
+    align-items: center;
+}
+
+header img {
+    margin-left: 10px;
+    height: 50px;
+}   
+
+#main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+}   
+
+#window {
+    padding: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(0deg, rgb(219, 219, 219, 65%), white);
+    backdrop-filter: blur(10px);
+    border: rgb(177, 177, 177, 20%) 4px solid;
+    border-bottom: rgb(177, 177, 177, 70%) 0px solid;
+    width: 65%;
+    padding: 5%;
+    max-height: 65%;
+}
+
+#grid {
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr);   
+    margin: auto; 
+    gap: 10px;  
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    max-width: 750px;
+    height: 100%;
 }
 
 button {
-    position: relative;
-    display: flex;
-    text-align: left;
-    align-items: center;
-    font-family: Montserrat;
-    font-size: 25px;
-    width: 300px;
-    height: 50px;
-    background: none;
-    border: none;
-    color: white;
+    aspect-ratio: 1;
+    background: linear-gradient(0deg, rgb(219, 219, 219), white);
+    border-radius: 25%;
+    border: rgb(167, 167, 167) 4px solid;
+    background-image: url(media/missing.gif);
+    background-color: rgba(255, 255, 255, 0.89);
+    background-blend-mode: lighten;
+    background-size: cover;
 }
 
+.bwg {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(100%);
+    transition: background-color .2s, transform .2s;
+}
 
-p {
-    left: 10px;
+.bwg:hover{
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(105%);
+}
+
+#b1{
+    background-image: url(media/mario.png);
+}
+#b2{    
+    background-image: url(media/mc.png);
+}
+#b3{
+    background-image: url(media/snake.png);
+}
+
+#tooltip {
+    display:none;
     position: absolute;
-    margin:0;
-    transition: left .2s ease;
+    background: linear-gradient(0deg, rgb(219, 219, 219), white);
+    border-radius: 4px;
+    border: 2px solid rgb(145, 145, 145);
+    color: rgb(117, 117, 117);
+    pointer-events: none;
 }
 
-button:hover p{
-    left:30px;
+#cover {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: black;
+    transition: opacity 1s;
 }
 
-#waves {
-    animation: opac 4s;
+#enterbut {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(100%);
+    transition: transform .2s;
+    width: 200px;
+    background: rgb(0,0,0,0);
+    border: none;
+    font-size: 50px;
+    color:white
 }
 
-.wave {
- background-image: url("media/wave.svg");
- background-repeat: repeat-x;
- background-size: 500px auto;
- background-position: bottom;
- position: absolute;
- bottom: 0%;
- width: 100%;
- height: 200px;
- z-index: 1;
-}
-
-@keyframes wave1 {
- 0% {
- background-position-x: 0%;
- }
- 100% {
- background-position-x: 700px;
- }
-}
-@keyframes wave2 {
- 0% {
- background-position-x: 0%;
- }
- 100% {
- background-position-x: 400px;
- }
-}
-@keyframes wave3 {
- 0% {
- background-position-x: 0%;
- }
- 100% {
- background-position-x: 300px;
- }
-}
-
-#wave1 {
-    z-index: 100;
-    background-size: 700px auto;
-    transform: translate(0,0);
-    filter: brightness(.7);
-    animation: wave1 5s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-}
-
-#wave2{
-    z-index: 50;
-    background-size: 400px auto;
-    transform: translate(0,-45%);
-    filter: brightness(.5);
-    animation: wave2 3s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
-}
-
-#wave3{
-    z-index: 2;
-    background-size: 300px auto;
-    transform: translate(0,-65%);
-    filter: brightness(.3);
-    animation: wave3 2s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+#enterbut:hover {
+    transform: translate(-50%, -50%) scale(120%);
 }

@@ -3,26 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RealGamez</title>
+    <title>games.plaza</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Games</h1>
-    
-    <div id="games">
-        <button onclick="window.location.href = '/games/sm64'"><p>SM64</p></button>
-        <button onclick="window.location.href = '/games/eagler/1.12.2'"><p>Eaglercraft</p></button>
-        <button onclick="window.location.href = '/games/snake'"><p>Snake</p></button>
+    <header><img src="media/logo.png"></header>
+    <div id="main">
+        <div id="window">
+            <div id="grid">
+                <button class="bwg" id="b1" onmouseover="mouseEnter('SM64')" onmouseleave="mouseLeave()" onclick="play('/games/sm64')"></button>
+                <button class="bwg" id="b2" onmouseover="mouseEnter('Eaglercraft')" onmouseleave="mouseLeave()" onclick="play('/games/eagler/1.12.2')"></button>
+                <button class="bwg" id="b3" onmouseover="mouseEnter('Snake')" onmouseleave="mouseLeave()" onclick="play('/games/snake')"></button>
+                <button id="b4"></button>
+                <button id="b5"></button>
+                <button id="b6"></button>
+            </div>
+        </div>
     </div>
-    <div id="waves">
-        <div class="wave" id="wave1"></div>
-        <div class="wave" id="wave2"></div>
-        <div class="wave" id="wave3"></div>
+    <div id="tooltip">SM64</div>
+
+    <div id="cover">
+        <button id="enterbut" onclick="
+            document.getElementById('cover').style.opacity=0; 
+            music.play();
+            setTimeout(()=>{
+                document.getElementById('cover').style.display = 'none';
+            }, 1000)">Enter</button>
     </div>
     <script src="script.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Climate+Crisis:YEAR@1979&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 </body>
 </html>
-
