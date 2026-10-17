@@ -32,10 +32,17 @@
     "ss:DKYIHe": "assets/www.google.com/xjs/_/ss/6a5ac48759.css"
   };
 
+  //Google reorders the module list between builds, so compare it as a sorted set.
+  function normList(list) { return list.split(",").sort().join(","); }
   function moduleList(url) {
     var m = url.match(/\/m=([^\/?#]+)/);
-    return m ? m[1] : null;
+    return m ? normList(m[1]) : null;
   }
+  (function () {
+    var norm = {};
+    Object.keys(FINGERPRINT).forEach(function (k) { norm[k.slice(0, 3) + normList(k.slice(3))] = FINGERPRINT[k]; });
+    FINGERPRINT = norm;
+  })();
   function absolute(url) {
     if (url.slice(0, 2) === "//") { return "https:" + url; }
     if (url.charAt(0) === "/" && url.charAt(1) !== "/") { return "https://www.google.com" + url; }

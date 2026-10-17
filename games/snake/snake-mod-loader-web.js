@@ -113,7 +113,7 @@ let externalConfig = {
 
     //Make a synchronous request for modInfo JSON file
     let req = new XMLHttpRequest();
-    req.open('GET', 'https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakeModLoader/main/build/mod-info.json', false);
+    req.open('GET', './mod-info.json', false);
     req.onload = function() {
       if(this.status === 200) {
         try {
@@ -189,7 +189,10 @@ document.body.appendChild = function(el) {
   if(el.tagName !== 'SCRIPT') return document.body.appendChildOld(el);
 
   //Basic checks to filter out scripts which can't be the snake script
-  if(el.src === '' || el.src.includes('apis.google.com') || !el.src.includes('www.google')) return document.body.appendChildOld(el);
+  //web snake: local-assets.js / snake-web-initial.js rewrite google urls to local files (e.g. snake.js) before we get here,
+  //so the src no longer contains 'www.google'. Let the locally served game bundle through.
+  const isLocalSnakeBundle = WEB_VERSION && /\/snake\.js(\?|#|$)/.test(el.src);
+  if(el.src === '' || el.src.includes('apis.google.com') || (!el.src.includes('www.google') && !isLocalSnakeBundle)) return document.body.appendChildOld(el);
 
   //web snake
   if(WEB_VERSION) {
@@ -323,6 +326,20 @@ document.body.appendChild = function(el) {
       modObjectName = modsConfig[currentlySelectedMod].customModName;
     }
 
+    //web snake: the local snake.js is not exactly the build CustomBowl's regex expects. Its failure aborts all of alterSnakeCode,
+    //so treat it as optional: log it, skip that one library, and keep every other library's changes.
+    if(WEB_VERSION && window.CustomBowl && typeof window.CustomBowl.alterCode === 'function' && !window.CustomBowl.alterCodeGuarded) {
+      const origBowlAlter = window.CustomBowl.alterCode;
+      window.CustomBowl.alterCode = function(code) {
+        try {
+          return origBowlAlter.apply(this, arguments);
+        } catch(err) {
+          console.warn('CustomBowl.alterCode failed against this snake.js, skipping custom bowl only:', err);
+          return code;
+        }
+      };
+      window.CustomBowl.alterCodeGuarded = true;
+    }
     //Skip below if either the code didn't load, or it has the wrong variable
     if(!window[modObjectName]) {
       (0,eval)(this.responseText);
