@@ -14,7 +14,7 @@
     "MorePudding": {
       "displayName": "More Pudding Mod",
       "hasUrl": true,
-      "url": "https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakePudding/main/MorePudding.js",
+      "url": "mods/MorePudding.js",
       "modDescription": {
         "descriptionName": "More Pudding Mod",
         "authors": [
@@ -35,24 +35,8 @@
       },
       "web": [
         {
-          "version": 3,
-          "url": "https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakePudding/arrow/MorePudding.js"
-        },
-        {
-          "version": 4,
-          "url": "https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakePudding/pre_dpad/MorePudding.js"
-        },
-        {
-          "version": 5,
-          "url": "https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakePudding/magnet/MorePudding.js"
-        },
-        {
-          "version": 12,
-          "url": "https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakePudding/v12/MorePudding.js"
-        },
-        {
           "version": 13,
-          "url": "https://raw.githubusercontent.com/DarkSnakeGang/GoogleSnakePudding/main/MorePudding.js"
+          "url": "mods/MorePudding.js"
         }
       ],
       "mobile": {
