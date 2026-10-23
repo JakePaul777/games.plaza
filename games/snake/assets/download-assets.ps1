@@ -74,6 +74,8 @@ function Patch($path, $pairs) {
 $mp = @(
   @("$gh/Libraries/", 'mods/Libraries/'),
   @("$gh/bootstrap-stripped.css", 'mods/bootstrap-stripped.css'),
+  @('https://www.google.com/logos/', 'assets/www.google.com/logos/'),
+  @('https://fonts.gstatic.com/', 'assets/fonts.gstatic.com/'),
   @('https://i.postimg.cc/LhKWc2Wb/Empty.png', 'assets/postimg/Empty.png'),
   @("$cg/Micro.png?raw=true", 'assets/size-images/Micro.png'),
   @("$cg/Tiny.png?raw=true", 'assets/size-images/Tiny.png'),
