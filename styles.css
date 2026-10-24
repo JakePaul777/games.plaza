@@ -112,6 +112,9 @@ button {
 #b8{
     background-image: url(media/games/portalflash.png);
 }
+#b9{
+    background-image: url(media/games/granny.png);
+}
 
 #tooltip {
     display:none;
