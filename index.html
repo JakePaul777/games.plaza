@@ -14,13 +14,24 @@
                 <button class="bwg" id="b1" onmouseover="mouseEnter('SM64')" onmouseleave="mouseLeave()" onclick="play('/games/sm64')"></button>
                 <button class="bwg" id="b2" onmouseover="mouseEnter('Eaglercraft')" onmouseleave="mouseLeave()" onclick="play('/games/eagler/1.12.2')"></button>
                 <button class="bwg" id="b3" onmouseover="mouseEnter('Snake')" onmouseleave="mouseLeave()" onclick="play('/games/snake')"></button>
-                <button id="b4"></button>
-                <button id="b5"></button>
-                <button id="b6"></button>
+                <button class="bwg" id="b4" onmouseover="mouseEnter('Slope')" onmouseleave="mouseLeave()" onclick="play('/games/slope')"></button>
+                <button class="bwg" id="b5" onmouseover="mouseEnter('FNAF1')" onmouseleave="mouseLeave()" onclick="play('/games/fnaf1')"></button>
+                <button class="bwg" id="b6" onmouseover="mouseEnter('FNAF2')" onmouseleave="mouseLeave()" onclick="play('/games/fnaf2')"></button>
+                <button class="bwg" id="b7" onmouseover="mouseEnter('Geometry Dash')" onmouseleave="mouseLeave()" onclick="play('/games/gd')"></button>
+                <button class="bwg" id="b8" onmouseover="mouseEnter('Portal: Flash')" onmouseleave="mouseLeave()" onclick="play('/games/portalflash')"></button>
+                <button id="b9"></button>
+                <button id="b10"></button>
+                <button id="b11"></button>
+                <button id="b12"></button>
+                <button id="b13"></button>
+                <button id="b14"></button>
+                <button id="b15"></button>
+                <button id="b16"></button>
+                <button id="b17"></button>
+                <button id="b18"></button>
             </div>
         </div>
     </div>
-    <div id="tooltip">SM64</div>
 
     <div id="cover">
         <button id="enterbut" onclick="
@@ -29,7 +40,14 @@
             setTimeout(()=>{
                 document.getElementById('cover').style.display = 'none';
             }, 1000)">Enter</button>
+        <button id="gobackbut" onclick="
+            document.getElementById('cover').style.opacity=0; 
+            music.play();
+            setTimeout(()=>{
+                document.getElementById('cover').style.display = 'none';
+            }, 1000)">Go Back</button>
     </div>
+    <div id="tooltip"></div>
     <script src="script.js"></script>
 </body>
 </html>

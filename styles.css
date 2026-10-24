@@ -53,13 +53,14 @@ header img {
 
 #grid {
     display: grid; 
-    grid-template-columns: repeat(3, 1fr);   
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(3, 1fr);   
     margin: auto; 
     gap: 15px;  
     justify-content: center;
     align-content: center;
     width: 100%;
-    max-width: 750px;
+    max-width: 1050px;
     height: 100%;
 }
 
@@ -88,13 +89,28 @@ button {
 }
 
 #b1{
-    background-image: url(media/mario.png);
+    background-image: url(media/games/mario.png);
 }
 #b2{    
-    background-image: url(media/mc.png);
+    background-image: url(media/games/mc.png);
 }
 #b3{
-    background-image: url(media/snake.png);
+    background-image: url(media/games/snake.png);
+}
+#b4{
+    background-image: url(media/games/slope.png);
+}
+#b5{
+    background-image: url(media/games/fnaf1.png);
+}
+#b6{    
+    background-image: url(media/games/fnaf2.png);
+}
+#b7{
+    background-image: url(media/games/gd.png);
+}
+#b8{
+    background-image: url(media/games/portalflash.png);
 }
 
 #tooltip {
@@ -129,5 +145,23 @@ button {
 }
 
 #enterbut:hover {
+    transform: translate(-50%, -50%) scale(120%);
+}
+
+#gobackbut {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(100%);
+    transition: transform .2s;
+    width: 200px;
+    background: rgb(0,0,0,0);
+    outline: none;
+    font-size: 50px;
+    color:white
+}
+
+#gobackbut:hover {
     transform: translate(-50%, -50%) scale(120%);
 }

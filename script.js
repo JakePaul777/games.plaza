@@ -32,6 +32,7 @@ function mouseLeave() {
     tooltip.style.display = "none";
 }
 
+
 document.addEventListener("mousemove", (e) => {
   x = e.clientX;
   y = e.clientY;
@@ -45,6 +46,7 @@ function play(path) {
     zip.volume = .5;
     zip.play();
     document.getElementById("enterbut").style.display = "none";
+    document.getElementById("gobackbut").style.display = "none";
     let element = document.getElementById("cover");
     element.style.transition = "opacity .5s"
     element.style.display = "block";
@@ -53,7 +55,8 @@ function play(path) {
         element.style.opacity = '1';
     });
     setTimeout(()=>{
-        window.location.href = path;
+        window.open(path);
+        document.getElementById("gobackbut").style.display = "block";
     }, 300)
 }
 
