@@ -1,0 +1,46 @@
+[
+    { 
+        "name": "SM64", 
+        "idname": "sm64" 
+    },
+    { 
+        "name": "Eaglercraft", 
+        "idname": "eagler" 
+    },
+    { 
+        "name": "Snake", 
+        "idname": "snake" 
+    },
+    { 
+        "name": "Slope", 
+        "idname": "slope" 
+    },
+    { 
+        "name": "FNAF1", 
+        "idname": "fnaf1" 
+    },
+    { 
+        "name": "FNAF2", 
+        "idname": "fnaf2" 
+    },
+    { 
+        "name": "Geometry Dash", 
+        "idname": "gd" 
+    },
+    { 
+        "name": "Portal: Flash", 
+        "idname": "portalflash" 
+    },
+    { 
+        "name": "Granny", 
+        "idname": "granny" 
+    },
+    {
+        "name": "Snow Rush 3D",
+        "idname": "snowrush"
+    },
+    {
+        "name": "Basket Bros",
+        "idname": "basketbros"
+    }
+]

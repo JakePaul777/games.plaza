@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>Basket Bros</title>
+
+	<meta name="description" content="Online multiplayer basketball! Dunk all over your bros!" />
+	<meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<link rel="shortcut icon" type="image/png" href="./favicon.png">
+	<meta name="author" content="Blue Wizard Digital">
+	<link rel="manifest" href="manifest.json">
+
+	<script type="text/javascript" src="./BasketBros.js?th=694"></script>
+
+	<script>
+		if (typeof navigator.serviceWorker !== 'undefined') {
+			navigator.serviceWorker.register('sw.js')
+		}
+	</script>
+
+	<script>
+		window.addEventListener ("touchmove", function (event) { event.preventDefault (); }, { capture: false, passive: false });
+		if (typeof window.devicePixelRatio != 'undefined' && window.devicePixelRatio > 2) {
+			var meta = document.getElementById ("viewport");
+			meta.setAttribute ('content', 'width=device-width, initial-scale=' + (2 / window.devicePixelRatio) + ', user-scalable=no');
+		}
+		window.addEventListener('keydown', function(e) {
+			if ((e.keyCode == 32 || e.keyCode == 38 || e.keyCode == 40) && e.target == document.body) {
+				e.preventDefault();
+			}
+		});
+		var aCo = 'US';
+	</script>
+
+	<style>
+		html,body { margin: 0; padding: 0; background: #000000; color: orange; height: 100vh; width: 100vw; }
+		.body::-webkit-scrollbar { width: 0px; }
+		#openfl-content { background: #000000; width: 100%; height: 100%; }
+		#pleaserotate-graphic { fill: #fff; }
+		#pleaserotate-backdrop { color: #fff; background-color: #000; }
+
+		#more {
+			display: flex;
+			justify-content: space-between;
+			background-color: #1a1a1a;
+			padding: 40px;
+			color: #fff;
+			font-family: 'Arial', sans-serif;
+		}
+		.info-box {
+			width: 48%;
+			background-color: #222;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+		}
+		h3 { font-size: 24px; color: #ffa500; margin-bottom: 15px; }
+		p, b { line-height: 1.6; font-size: 16px; }
+		p { margin-bottom: 10px; }
+		b { color: #ffd700; }
+		a:link, a:visited, a:hover, a:active { color: #ffd700; }
+
+		footer {
+			background-color: #000;
+			padding: 20px 0;
+			text-align: center;
+			color: #ccc;
+			font-size: 14px;
+			margin-top: 40px;
+			font-family: 'Arial', sans-serif;
+			border: 0;
+		}
+	</style>
+
+	<script>
+		/* you can pass in options here */
+		PleaseRotateOptions = { forcePortrait: false };
+	</script>
+	<script src="pleaserotate.js?v=1"></script>
+
+	<!-- Firebase (Google sign-in + cloud save only; no analytics) -->
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+	<script>
+		const firebaseConfig = {
+			apiKey: "AIzaSyDeQ1CV2ZfZg4SJlu9CEWfpHG3--xpt-oU",
+			authDomain: "basket-bros-43586.firebaseapp.com",
+			projectId: "basket-bros-43586",
+			storageBucket: "basket-bros-43586.appspot.com",
+			messagingSenderId: "179647849243",
+			appId: "1:179647849243:web:87b99f44ca23f8a11729be"
+		};
+
+		var SAVE_COLLECTION = 'users3d';
+
+		firebase.initializeApp(firebaseConfig);
+		const auth = firebase.auth();
+		const db = firebase.firestore();
+
+		var userData = "";
+		var cloud = NewCloudState(null);
+
+		function NewCloudState(uid) {
+			return { uid: uid, ready: false, loading: false, writing: false, pending: null, rev: 0, retry: 0, timer: null };
+		}
+
+		function CallGame(name) {
+			try { if (typeof Main != "undefined" && Main[name]) Main[name](); }
+			catch (e) { console.error('Auth: Main.' + name + ' failed', e); }
+		}
+
+		function triggerSignIn() {
+			auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(function(e) {
+				console.warn('Auth: sign-in failed', e);
+			});
+		}
+
+		function isUserLoggedIn() {
+			return auth.currentUser !== null;
+		}
+
+		function loadGameData() {
+			return userData;
+		}
+
+		function saveGameData(gameData) {
+			if (!auth.currentUser || typeof gameData !== 'string' || gameData.length < 3) return;
+			cloud.pending = gameData;
+			FlushSave();
+		}
+
+		function loadGameDataAsync() {
+			var uid = cloud.uid;
+			if (!uid || cloud.ready || cloud.loading) return;
+			cloud.loading = true;
+			clearTimeout(cloud.timer);
+			db.collection(SAVE_COLLECTION).doc(uid).get({ source: 'server' }).then(function(doc) {
+				if (cloud.uid !== uid) return;
+				var d = doc.exists ? doc.data() : {};
+				cloud.loading = false;
+				cloud.rev = d.rev || 0;
+				cloud.retry = 0;
+				cloud.ready = true;
+				if (typeof d.gameData === 'string' && d.gameData.length > 2) {
+					userData = d.gameData;
+					cloud.pending = null;
+				}
+				console.log('Auth: cloud save loaded, rev ' + cloud.rev);
+				CallGame('LoadDataComplete');
+				FlushSave();
+			}).catch(function(e) {
+				if (cloud.uid !== uid) return;
+				cloud.loading = false;
+				var wait = Math.min(30000, 2000 * Math.pow(2, cloud.retry++));
+				console.warn('Auth: cloud load failed, retrying in ' + wait + 'ms', e);
+				cloud.timer = setTimeout(loadGameDataAsync, wait);
+			});
+		}
+
+		function FlushSave() {
+			if (!cloud.ready || cloud.writing || cloud.pending === null) return;
+			var uid = cloud.uid, data = cloud.pending, rev = cloud.rev;
+			cloud.pending = null;
+			if (data === userData) return;
+			cloud.writing = true;
+			var ref = db.collection(SAVE_COLLECTION).doc(uid);
+			db.runTransaction(function(t) {
+				return t.get(ref).then(function(doc) {
+					var d = doc.exists ? doc.data() : {};
+					if ((d.rev || 0) !== rev) return false;
+					var upd = { gameData: data, rev: rev + 1, updated: firebase.firestore.FieldValue.serverTimestamp() };
+					var old = typeof d.gameData === 'string' ? d.gameData : '';
+					var backup = typeof d.gameDataBackup === 'string' ? d.gameDataBackup : '';
+					if (old.length > data.length && old.length >= backup.length) upd.gameDataBackup = old;
+					t.set(ref, upd, { merge: true });
+					return true;
+				});
+			}).then(function(written) {
+				if (cloud.uid !== uid) return;
+				cloud.writing = false;
+				if (!written) {
+					console.warn('Auth: cloud save is newer elsewhere, reloading');
+					cloud.ready = false;
+					cloud.pending = null;
+					loadGameDataAsync();
+					return;
+				}
+				cloud.rev = rev + 1;
+				userData = data;
+				FlushSave();
+			}).catch(function(e) {
+				if (cloud.uid !== uid) return;
+				cloud.writing = false;
+				if (cloud.pending === null) cloud.pending = data;
+				console.warn('Auth: cloud save failed, retrying', e);
+				clearTimeout(cloud.timer);
+				cloud.timer = setTimeout(FlushSave, 5000);
+			});
+		}
+
+		auth.onAuthStateChanged(function(user) {
+			var uid = user ? user.uid : null;
+			if (uid === cloud.uid) return;
+			clearTimeout(cloud.timer);
+			cloud = NewCloudState(uid);
+			userData = "";
+			if (uid) loadGameDataAsync();
+		});
+
+		window.addEventListener('online', function() {
+			if (cloud.ready) FlushSave(); else loadGameDataAsync();
+		});
+
+		function signOut() {
+			auth.signOut().then(function() {
+				CallGame('SignOutComplete');
+				console.log('signed out');
+			});
+		}
+	</script>
+</head>
+<body style="overflow:hidden;">
+	<noscript>Enable JavaScript bro!</noscript>
+	<script>
+		// Carries the local save across the www. -> non-www. redirect
+		var url = window.location.href;
+		if (url.includes("www.")) {
+			url = url.replace("www.", "");
+			var f = document.createElement('form');
+			f.action = url;
+			f.method = 'POST';
+			var i = document.createElement('input');
+			i.type = 'hidden';
+			i.name = 'FGlobals';
+			i.value = localStorage.getItem("/:Globals");
+			f.appendChild(i);
+			document.body.appendChild(f);
+			f.submit();
+		} else {
+			var aPost = "";
+			var aStorage = localStorage.getItem("/:Globals");
+			var aLen = 0;
+			if (aStorage != null && aStorage.length > 0) aLen = aStorage.length;
+			if (aPost.length > aLen) localStorage.setItem("/:Globals", aPost);
+			if (aPost.length > 0 && aPost.length == aLen) localStorage.setItem("/:Globals", aPost);
+		}
+	</script>
+
+	<div id="loading" style="position: absolute; z-index: 15; top: 60%; left: 50%; transform: translate(-50%, 0); background: black;">
+		<center><img src="assets/loading4.png"><br/>
+		<img src="assets/fbro.png">
+		<img src="assets/bbbro.png">
+		<img src="assets/sbro.png">
+		<img src="assets/wbro.png">
+		<img src="assets/kbro.png">
+		<img src="assets/bbro.png">
+		</center>
+	</div>
+
+	<!-- Inert placeholders: the game writes into these ids and throws if they are missing -->
+	<div style="display:none !important">
+		<div id="preroll"></div>
+		<div id="basketbros-io_160x600"></div>
+		<div id="basketbros-io_160x600_2"></div>
+		<div id="basketbros-io_320x100"></div>
+		<div id="basketbros-io_300x250"></div>
+		<div id="basketbros-io_300x250_2"></div>
+		<div id="basketbros-io_player_300x600"></div>
+		<div id="basketbros-io_300x600_m"></div>
+		<div id="basketbros-io_728x90"></div>
+		<div id="basketbros-io_728x90_m"></div>
+		<div id="basketbros-io_970x250"></div>
+	</div>
+
+	<div id="game2" style="width: 100%; height: 100%;">
+		<div id="openfl-content" onblur="window.focus();" style="width: 100%;">
+			<script type="text/javascript">
+				lime.embed ("BasketBros", "openfl-content", 0, 0, { parameters: {} });
+			</script>
+		</div>
+	</div>
+	<br/>
+	<div tabindex="-1" id="more">
+		<div class="info-box">
+			<h3>About BasketBros</h3>
+			<p>Alt link: www.baller.monster. Fun, fast-paced 1 on 1 basketball game with lots of action. Pick from a variety of characters and let the play begin.  Go for crazy dunks, hit the stepback 3, or maybe even punch out your opponent!</p>
+			<p>The controls are very simple: Use either the arrow keys or wasd to control your baller.  Jump by pressing the up arrow, and jump again to shoot.  Enter/Space will attack if you are on defense.</p>
+		</div>
+		<div class="info-box">
+			<h3>FAQ</h3>
+			<b>Why isn't the game loading?</b>
+			<p>You should check your internet connection and make sure our site isn't blocked.</p>
+			<b>How do I play?</b>
+			<p>Just hop in and go dunk on some fools!</p>
+			<b>Which browser should I use?</b>
+			<p>You should use chrome.  It is the only browser guaranteed to work.  BasketBros has also been tested to work on FireFox and Safari, but not guaranteed.</p>
+			<b>Are there more Bros games?</b>
+			<p>Yes! Our newest is <a href="https://footballbros.io">Football Bros</a>, but we have other bros games, including <a href="https://soccerbros.gg">Soccer Bros</a> and <a href="https://wrestlebros.io">Wrestle Bros</a>. Also be sure to check out <a href="https://hockeybros.io" target="_blank">Hockey Bros!</a></p>
+		</div>
+	</div>
+	<footer tabindex="-1">
+		<div class="footer-links">
+			<a href="https://bluewizard.com">Copyright 2025 Blue Wizard Digital</a> |
+			<a tabindex="-1" href="https://bluewizard.com/terms/">Terms of Service</a> |
+			<a tabindex="-1" href="https://bluewizard.com/privacypolicy/">Privacy Policy</a>
+		</div>
+	</footer>
+
+	<script>
+		// ---- Ad/analytics stubs ----
+		// The Haxe game calls these by name, so they must exist. They do nothing,
+		// except the ones the game waits on, which finish immediately.
+		function SendEvent() {}
+		function LoadVideo() {}
+		function SetupMSNotification() {}
+		function ShowVideo() { Main.DoneVideoAd(true); }      // flip to Main.DoneVideoAd() if rewards don't grant
+		function ShowAdBreak() { Main.DoneInterstitialAd(true); }
+		// The game uses these to hide the loading screen, so they must really hide things
+		function HideAd(id) {
+			var el = document.getElementById(id);
+			if (el) { el.style.display = "none"; el.style.visibility = "hidden"; el.style.pointerEvents = "none"; }
+		}
+		function HideAllAds() { HideAd('loading'); }
+		function ShowAd1() {}
+		function ShowAd2() {}
+		function ShowAd3() {}
+		function ShowAd4() {}
+		function ShowAd6() {}
+		function ShowAd7() {}
+		function ShowAd8() {}
+		function ShowAd9() {}
+		function ShowAd10() {}
+		function SetCGInviteLink() {}
+		function GamePlayStart() {}
+		function GamePlayStop() {}
+		function HappyTime() {}
+		function EmailSignup() {}
+
+		document.getElementById("openfl-content").addEventListener("wheel", doScroll);
+		document.getElementById("more").addEventListener("wheel", doScroll);
+		function doScroll(event) {
+			window.scroll(0, window.scrollY + event.deltaY);
+		}
+
+		// keep keyboard focus on the game
+		setInterval(function () {
+			if (document.activeElement.tagName == "IFRAME") {
+				document.activeElement.blur();
+				document.getElementById('openfl-content').focus();
+			}
+		}, 1000);
+	</script>
+</body>
+</html>

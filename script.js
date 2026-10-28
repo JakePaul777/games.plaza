@@ -2,12 +2,42 @@ let audio = new Audio("media/hover.wav");
 let audio2 = new Audio("media/stayhover.wav");
 let music = new Audio("media/music.wav")
 music.addEventListener('timeupdate', function(){
-  let buffer = .44
-  if(this.currentTime > this.duration - buffer){
-      this.currentTime = 0
-      this.play()
-  }
+    let buffer = .44
+    if(this.currentTime > this.duration - buffer){
+        this.currentTime = 0
+        this.play()
+    }
 });
+
+let amount = 18;
+let games
+async function loadGames() {
+    let response = await fetch('games.json');
+    games = await response.json();
+
+    let gameholder = document.getElementById("grid")
+    for(let i = 0; i < amount; i++) {
+        game = document.createElement("button")
+        game.id = "b"+(i+1);
+
+        gameholder.appendChild(game);
+        if (games[i] != null) {
+            game.className = "bwg";
+            game.style.backgroundImage = "url(media/games/" + games[i].idname + ".png)";
+
+            game.addEventListener("mouseenter", function() {
+                mouseEnter(games[i].name);
+            });
+            game.addEventListener("mouseleave", function() {
+                mouseLeave();
+            });
+            game.onclick = function() {
+                play("/games/" + games[i].idname);
+            };
+        }
+    }
+}
+loadGames();
 
 let tooltip = document.getElementById("tooltip");
 
@@ -31,7 +61,6 @@ function mouseLeave() {
     clearTimeout(timer);
     tooltip.style.display = "none";
 }
-
 
 document.addEventListener("mousemove", (e) => {
   x = e.clientX;
@@ -62,6 +91,6 @@ function play(path) {
 
 window.addEventListener('pageshow', function (event) {
     if (event.persisted) {
-      window.location.reload();
+        window.location.reload();
     }
-  });
+});
