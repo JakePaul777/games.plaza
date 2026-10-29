@@ -26,7 +26,7 @@ async function loadGames() {
             game.style.backgroundImage = "url(media/games/" + games[i].idname + ".png)";
 
             game.addEventListener("mouseenter", function() {
-                mouseEnter(games[i].name);
+                mouseEnter(games[i].name, true);
             });
             game.addEventListener("mouseleave", function() {
                 mouseLeave();
@@ -39,21 +39,33 @@ async function loadGames() {
 }
 loadGames();
 
+logo = document.getElementById("logo");
+logo.addEventListener("mouseenter", function() {
+    mouseEnter("made with love and sus", false);
+});
+logo.addEventListener("mouseleave", function() {
+    mouseLeave();
+});
+
 let tooltip = document.getElementById("tooltip");
 
 let timer = 0;
 let TIMEOUT = 500;
 
-function mouseEnter(e) {
-    aud = audio.cloneNode(true)
-    aud.volume = .1;
-    aud.play();
+function mouseEnter(e, sound) {
+    if (sound) {
+        aud = audio.cloneNode(true)
+        aud.volume = .1;
+        aud.play();
+    }
     timer = setTimeout(() => {
-       aud = audio2.cloneNode(true)
-       aud.volume = .1;
-       aud.play();
-       tooltip.style.display = "block";
-       tooltip.innerText = e;
+        if (sound) {
+            aud = audio2.cloneNode(true)
+            aud.volume = .1;
+            aud.play();
+        }
+        tooltip.style.display = "block";
+        tooltip.innerText = e;
 
     }, TIMEOUT);
 }

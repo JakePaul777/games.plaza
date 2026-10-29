@@ -36,11 +36,35 @@
         "idname": "granny" 
     },
     {
-        "name": "Snow Rush 3D",
-        "idname": "snowrush"
+        "name": "Snow Rider 3D",
+        "idname": "snowrider"
     },
     {
         "name": "Basket Bros",
         "idname": "basketbros"
+    },
+    {
+        "name": "Basket Random",
+        "idname": "basketrandom"
+    },
+    {
+        "name": "Baldi's Basics",
+        "idname": "baldi"
+    },
+    {
+        "name": "Angry Birds",
+        "idname": "angrybirds"
+    },
+    {
+        "name": "Happy Wheels",
+        "idname": "happywheels"
+    },
+    {
+        "name": "Falling Fred",
+        "idname": "fred"
+    },
+    {
+        "name": "Subway Surfers",
+        "idname": "surfers"
     }
 ]

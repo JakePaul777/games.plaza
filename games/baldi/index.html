@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Baldi's Basics Classic</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <script src="Build/UnityLoader.js"></script>
+  <noscript>Your browser doesn't have JavaScript enabled. Please enable JavaScript or switch to a browser that supports it.</noscript>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Forced 16:9, scaled to fit the window (letterboxed) */
+    #unityContainer {
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      aspect-ratio: 16 / 9;
+    }
+
+    #unityContainer canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div id="unityContainer"></div>
+
+<script>
+  var unityInstance = UnityLoader.instantiate("unityContainer", "Build/HTML5.json");
+</script>
+</body>
+</html>
