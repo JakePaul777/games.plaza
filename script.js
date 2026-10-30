@@ -1,5 +1,6 @@
 let audio = new Audio("media/hover.wav");
 let audio2 = new Audio("media/stayhover.wav");
+let audio3 = new Audio("media/flip.wav");
 let music = new Audio("media/music.wav")
 music.addEventListener('timeupdate', function(){
     let buffer = .44
@@ -10,42 +11,86 @@ music.addEventListener('timeupdate', function(){
 });
 
 let amount = 18;
-let games
+let currentPage = 0;
+let games = [];
+
 async function loadGames() {
     let response = await fetch('games.json');
     games = await response.json();
+    renderGrid();
+}
 
-    let gameholder = document.getElementById("grid")
-    for(let i = 0; i < amount; i++) {
-        game = document.createElement("button")
-        game.id = "b"+(i+1);
+function renderGrid() {
+    let gameholder = document.getElementById("grid");
+    gameholder.innerHTML = "";
 
+    let start = currentPage * amount;
+    let end = start + amount;
+    let currentGames = games.slice(start, end);
+
+    for (let i = 0; i < amount; i++) {
+        let game = document.createElement("button");
+        game.id = "b" + (i + 1);
         gameholder.appendChild(game);
-        if (games[i] != null) {
-            game.className = "bwg";
-            game.style.backgroundImage = "url(media/games/" + games[i].idname + ".png)";
+
+        let gameData = currentGames[i];
+        if (gameData != null) {
+            game.className = "game-btn bwg";
+            game.style.backgroundImage = "url(media/games/" + gameData.idname + ".png)";
 
             game.addEventListener("mouseenter", function() {
-                mouseEnter(games[i].name, true);
+                mouseEnter(gameData.name, true);
             });
             game.addEventListener("mouseleave", function() {
                 mouseLeave();
             });
             game.onclick = function() {
-                play("/games/" + games[i].idname);
+                play("/games/" + gameData.idname);
             };
+        } else {
+            game.className = "game-btn";
+            game.style.backgroundImage = "url(media/missing.gif)";
+            game.style.cursor = "default";
+            game.onclick = null;
         }
     }
-}
-loadGames();
 
-logo = document.getElementById("logo");
-logo.addEventListener("mouseenter", function() {
-    mouseEnter("made with love and sus", false);
-});
-logo.addEventListener("mouseleave", function() {
-    mouseLeave();
-});
+    updateArrows();
+}
+
+function changePage(direction) {
+    aud = audio3.cloneNode(true)
+    aud.volume = .1;
+    aud.play();
+
+    let maxPage = Math.ceil(games.length / amount) - 1;
+    currentPage += direction;
+
+    if (currentPage < 0) currentPage = 0;
+    if (currentPage > maxPage) currentPage = maxPage;
+
+    renderGrid();
+}
+
+function updateArrows() {
+    let maxPage = Math.ceil(games.length / amount) - 1;
+    let prevBtn = document.getElementById("prev-btn");
+    let nextBtn = document.getElementById("next-btn");
+
+    if (currentPage > 0) {
+        prevBtn.style.visibility = "visible";
+    } else {
+        prevBtn.style.visibility = "hidden";
+    }
+
+    if (currentPage < maxPage) {
+        nextBtn.style.visibility = "visible";
+    } else {
+        nextBtn.style.visibility = "hidden";
+    }
+}
+
+loadGames();
 
 let tooltip = document.getElementById("tooltip");
 

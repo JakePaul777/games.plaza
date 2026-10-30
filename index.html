@@ -10,8 +10,10 @@
     <header><img src="media/logo.png" id="logo"></header>
     <div id="main">
         <div id="window">
+            <button id="prev-btn" class="arrow-btn" onclick="changePage(-1)">&#10094;</button>
             <div id="grid">
             </div>
+            <button id="next-btn" class="arrow-btn" onclick="changePage(1)">&#10095;</button>
         </div>
     </div>
 
@@ -31,5 +33,6 @@
     </div>
     <div id="tooltip"></div>
     <script src="script.js"></script>
+    <script src="pig.js" data-texture="media/pig.png" data-sounds="media/oink.mp3,media/ree.mp3"></script>
 </body>
 </html>

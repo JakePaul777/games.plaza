@@ -66,5 +66,9 @@
     {
         "name": "Subway Surfers",
         "idname": "surfers"
+    },
+    {
+        "name": "Cut The Rope",
+        "idname": "cuttherope"
     }
 ]

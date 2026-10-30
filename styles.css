@@ -51,6 +51,29 @@ header img {
     max-height: 65%;
 }
 
+button{
+    border: none;
+}
+
+.arrow-btn {
+    background: none;
+    font-size: 3rem;
+    color: #555;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 12px;
+    transition: transform 0.2s;
+    height: 100%;
+    z-index: 10;
+    aspect-ratio: auto;
+    outline: none;
+}
+
+.arrow-btn:hover {
+    transform: scale(1.1);
+    color: #272727;
+}
+
 #grid {
     display: grid; 
     grid-template-columns: repeat(6, 1fr);
@@ -64,7 +87,7 @@ header img {
     height: 100%;
 }
 
-button {
+.game-btn {
     aspect-ratio: 1;
     border-radius: 25%;
     border: none;
