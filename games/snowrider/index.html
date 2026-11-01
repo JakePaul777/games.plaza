@@ -11,9 +11,6 @@
     <meta property="og:image" content="snow-rider-3d.png" />
     <script src="TemplateData/UnityProgress.js"></script>
     <script src="Build/UnityLoader.js"></script>
-    <script>
-        var gameInstance = UnityLoader.instantiate("gameContainer", "Build/SnowRider3D-gd-1.json", { onProgress: UnityProgress, Module: { onRuntimeInitialized: function () { UnityProgress(gameInstance, "complete") } } });
-    </script>
 </head>
 
 <body style="overflow:hidden; margin:0; padding:0;">
@@ -25,6 +22,16 @@
             <div class="title">Snow Rider 3D</div>
         </div> -->
     </div>
+    <script>
+        window.addEventListener("load", function () {
+            window.gameInstance = UnityLoader.instantiate(
+                "gameContainer",
+                "Build/SnowRider3D-gd-1.json",
+                { onProgress: UnityProgress,
+                  Module: { onRuntimeInitialized: function () { UnityProgress(gameInstance, "complete") } } }
+            );
+        });
+    </script>
 </body>
 
 </html>

@@ -70,5 +70,25 @@
     {
         "name": "Cut The Rope",
         "idname": "cuttherope"
+    },
+    {
+        "name": "Fireboy & Watergirl",
+        "idname": "fawft"
+    },
+    {
+        "name": "OVO",
+        "idname": "ovo"
+    },
+    {
+        "name": "Run 3",
+        "idname": "run"
+    },
+    {
+        "name": "Cookie Clicker",
+        "idname": "cookieclicker"
+    },
+    {
+        "name": "Plants VS Zombies",
+        "idname": "pvz"
     }
 ]

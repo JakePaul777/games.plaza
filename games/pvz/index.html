@@ -1,0 +1,64 @@
+<!doctypehtml><html lang=en><head><meta charset=utf-8><meta content="width=device-width,initial-scale=1"name=viewport><title>Plants vs. Zombies</title><style>*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;background:#000;overflow:hidden}#canvas-container{width:100vw;height:100vh;position:fixed;inset:0;display:flex;justify-content:center;align-items:center;background:#000;overflow:hidden}canvas#canvas{display:block;background:#000;outline:0}#pvz-soft-keyboard{position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:0;opacity:0;resize:none;pointer-events:none;font-size:16px}#loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font:18px sans-serif;pointer-events:none}#err{position:fixed;left:0;right:0;bottom:0;padding:8px 12px;color:#e74c3c;font:13px sans-serif;text-align:center}</style></head><body><div id=canvas-container><canvas height=600 id=canvas tabindex=0 width=800></canvas></div><textarea autocapitalize=off autocomplete=off autocorrect=off enterkeyhint=done id=pvz-soft-keyboard spellcheck=false></textarea><div id=loading></div><div id=err></div><script>window.moduleReadyPromise=new Promise(function(n,e){window._resolveModuleReady=n,window._rejectModuleReady=e});var Module={canvas:document.getElementById("canvas"),noInitialRun:!0,onRuntimeInitialized:function(){window._resolveModuleReady()},onAbort:function(n){window._rejectModuleReady(new Error(n))},print:function(n){console.log(n)},printErr:function(n){console.warn(n)}};Module.canvas.addEventListener("contextmenu",function(n){n.preventDefault()})</script><script src=pvz-portable.js async></script><script>"use strict";
+const AUTO_OVERWRITE_SAVES=false,SAVE_SYNC_INTERVAL_MS=5e3;
+let savesMounted=false,saveSyncInFlight=null,saveSyncQueued=false,saveFsReadyPromise=null,saveSyncIntervalId=null;
+
+function resizeCanvas(){const c=document.getElementById("canvas"),t=document.getElementById("canvas-container"),s=Math.min(t.clientWidth/c.width,t.clientHeight/c.height);c.style.width=Math.floor(c.width*s)+"px";c.style.height=Math.floor(c.height*s)+"px"}
+window.addEventListener("resize",resizeCanvas);window.addEventListener("fullscreenchange",resizeCanvas);resizeCanvas();
+
+function canSyncSaves(){return savesMounted&&Module.FS&&"function"==typeof Module.FS.syncfs}
+async function ensureSaveFsReady(){return saveFsReadyPromise||(saveFsReadyPromise=(async()=>{await window.moduleReadyPromise;try{Module.FS.mkdir("/saves")}catch(e){}try{Module.FS.mount(Module.FS.filesystems.IDBFS,{},"/saves")}catch(e){}savesMounted=true;await new Promise(r=>Module.FS.syncfs(true,e=>{e&&console.warn("IDBFS initial sync error:",e);r()}))})(),saveFsReadyPromise)}
+async function syncSaves(){if(!canSyncSaves())return;if(saveSyncInFlight){saveSyncQueued=true;return saveSyncInFlight}saveSyncInFlight=new Promise(r=>Module.FS.syncfs(false,e=>{e&&console.warn("IDBFS persist error:",e);r()}));try{await saveSyncInFlight}finally{saveSyncInFlight=null;if(saveSyncQueued){saveSyncQueued=false;syncSaves()}}}
+
+function encPath(p){return p.split("/").map(encodeURIComponent).join("/")}
+async function fetchManifest(dir){try{const r=await fetch(dir+"/manifest.json",{cache:"no-store"});if(!r.ok)return null;const j=await r.json();if(Array.isArray(j))return j.map(String);if(j&&Array.isArray(j.files))return j.files.map(String)}catch(e){}return null}
+async function listDirectory(dir){
+  const m=await fetchManifest(dir);if(m)return m.filter(Boolean);
+  const out=[];
+  async function walk(rel,depth){
+    if(depth>8)return;
+    const r=await fetch(dir+"/"+(rel?encPath(rel)+"/":""),{cache:"no-store"});
+    if(!r.ok)throw new Error("Cannot list "+dir+"/ (HTTP "+r.status+")");
+    const doc=new DOMParser().parseFromString(await r.text(),"text/html");
+    for(const a of doc.querySelectorAll("a[href]")){
+      let h=a.getAttribute("href");
+      if(!h||/^[?#\/]/.test(h)||h.startsWith("..")||/^[a-z][a-z0-9+.-]*:/i.test(h))continue;
+      try{h=decodeURIComponent(h.split("?")[0].split("#")[0])}catch(e){continue}
+      if(h.endsWith("/"))await walk(rel+h,depth+1);
+      else if(h!=="manifest.json"||rel)out.push(rel+h)}}
+  await walk("",0);return out}
+let loadedBytes=0,totalBytes=0;
+function showProgress(){document.getElementById("loading").textContent="Loading "+(loadedBytes/1048576).toFixed(1)+"/"+(totalBytes/1048576).toFixed(1)+"Mb"}
+async function fetchBytes(url){
+  const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error(url+" → HTTP "+r.status);
+  const len=+r.headers.get("content-length")||0;totalBytes+=len;let got=0;
+  const rd=r.body.getReader(),chunks=[];
+  for(;;){const{done:d,value:v}=await rd.read();if(d)break;chunks.push(v);got+=v.length;loadedBytes+=v.length;if(loadedBytes>totalBytes)totalBytes=loadedBytes;showProgress()}
+  const out=new Uint8Array(got);let o=0;for(const c of chunks){out.set(c,o);o+=c.length}return out}
+function writeFS(path,data){const parts=path.split("/");let d="";for(let i=1;i<parts.length-1;i++){d+="/"+parts[i];try{Module.FS.mkdir(d)}catch(e){}}Module.FS.writeFile(path,data)}
+
+async function start(){
+  try{
+    await window.moduleReadyPromise;
+    writeFS("/main.pak",await fetchBytes("main.pak"));
+    const props=await listDirectory("properties");
+    if(!props.length)throw new Error("properties/ is empty or can't be listed (add properties/manifest.json)");
+    for(const p of props)writeFS("/properties/"+p,await fetchBytes("properties/"+encPath(p)));
+    await ensureSaveFsReady();
+    try{
+      for(const rel of await listDirectory("saves")){
+        const seg=rel.split("/"),k=seg.indexOf("userdata"),path="/saves/"+(k>=0?seg.slice(k).join("/"):"userdata/"+rel);
+        if(!AUTO_OVERWRITE_SAVES){try{Module.FS.stat(path);continue}catch(e){}}
+        try{writeFS(path,await fetchBytes("saves/"+encPath(rel)))}catch(e){console.warn("Skipping save",rel,e)}}
+      await syncSaves()
+    }catch(e){console.info("No root saves imported:",e.message)}
+    saveSyncIntervalId=setInterval(syncSaves,SAVE_SYNC_INTERVAL_MS);
+    resizeCanvas();
+    document.getElementById("loading").style.display="none";
+    Module.callMain([])
+  }catch(e){console.error("Failed to start game:",e);document.getElementById("loading").style.display="none";document.getElementById("err").textContent="Failed to start: "+(e.message||e)}}
+
+document.addEventListener("visibilitychange",()=>{"hidden"===document.visibilityState&&syncSaves()});
+window.addEventListener("pagehide",()=>{syncSaves()});
+window.onGameExit=function(){null!==saveSyncIntervalId&&(clearInterval(saveSyncIntervalId),saveSyncIntervalId=null);syncSaves().finally(()=>window.location.reload())};
+start();
+</script></body></html>

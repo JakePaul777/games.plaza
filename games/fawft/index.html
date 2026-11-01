@@ -1,0 +1,117 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"> <!--<![endif]-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-title" content="Bubblez">
+    <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui,shrink-to-fit=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
+
+    <meta name="apple-mobile-web-app-title" content="Fireboy & Watergirl 1 Forest Temple">
+    <title>Fireboy & Watergirl 1 Forest Temple</title>
+
+
+
+    <script type="text/javascript">
+
+    </script>
+
+
+
+
+
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" sizes="60x60" href="icon-60x60.png">
+    <link rel="apple-touch-icon" href="icon-60x60.png">
+
+
+</head>
+
+<body style="margin: 0px; overflow:hidden;">
+    <script type="text/javascript">
+        window.requireNode = window.require;
+        window.require = undefined;
+    </script>
+    <script src="bower_components/requirejs/require.js"></script>
+
+    <div id="root">
+        <div id="container"></div>
+        <div id="hammer"></div>
+        <div id="debug-fps" style="color:#ff0000; position: absolute; top: 0;"></div>
+    </div>
+
+
+
+
+
+
+
+    <script type="text/javascript">
+        var _azerionIntegration = {
+            "af": false,
+            "sa": false,
+            "la": false,
+            "bd": 0,
+            "playBtn": true,
+            "cp": false
+        }
+
+
+
+
+        var gameName = "fireboy-and-watergirl-forest-temple.min.js";
+
+        // No cache-busting / version display: null makes the game's loader skip the "?v=" suffix.
+        var version = null;
+
+        // --- Load watchdog -------------------------------------------------
+        // Rapid reloads (Ctrl+F5 twice) can leave the loader stuck at 0. If the game hasn't
+        // got past startup after WATCHDOG_MS, reload once more automatically (max 3 tries).
+        (function() {
+            var WATCHDOG_MS = 10000, MAX_TRIES = 3, KEY = "fbwg_retries";
+            var splashDone = false;
+            var origLog = console.log;
+            console.log = function(m) {
+                if (m === "Splash Loaded") splashDone = true;
+                return origLog.apply(console, arguments);
+            };
+
+            function started() {
+                if (splashDone) return true;
+                var g = window.Phaser && Phaser.GAMES && Phaser.GAMES[0];
+                if (!g) return false;
+                if (g.load && g.load.progress > 0) return true;
+                var st = g.state && g.state.current;
+                return !!st && st !== "boot" && st !== "load";
+            }
+
+            setTimeout(function() {
+                var tries = 0;
+                try { tries = parseInt(sessionStorage.getItem(KEY) || "0", 10) || 0; } catch (e) {}
+                if (started()) {
+                    try { sessionStorage.removeItem(KEY); } catch (e) {}
+                    return;
+                }
+                if (tries >= MAX_TRIES) return;
+                try { sessionStorage.setItem(KEY, String(tries + 1)); } catch (e) {}
+                location.reload();
+            }, WATCHDOG_MS);
+        })();
+
+        require(["fireboy-and-watergirl-forest-temple.min.js"]);
+    </script>
+</body>
+
+</html>

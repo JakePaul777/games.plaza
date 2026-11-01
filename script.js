@@ -63,13 +63,27 @@ function changePage(direction) {
     aud.volume = .1;
     aud.play();
 
-    let maxPage = Math.ceil(games.length / amount) - 1;
-    currentPage += direction;
+    let grid = document.getElementById("grid");
+    
+    grid.style.opacity = "0";
 
-    if (currentPage < 0) currentPage = 0;
-    if (currentPage > maxPage) currentPage = maxPage;
+    setTimeout(() => {
+        let maxPage = Math.ceil(games.length / amount) - 1;
+        currentPage += direction;
 
-    renderGrid();
+        if (currentPage < 0) currentPage = 0;
+        if (currentPage > maxPage) currentPage = maxPage;
+        renderGrid();
+        clearTimeout(timer);    
+
+        grid.style.opacity = "1";
+
+        setTimeout(() => {
+            isAnimating = false;
+            updateArrows();
+        }, 250);
+
+    }, 250);
 }
 
 function updateArrows() {
