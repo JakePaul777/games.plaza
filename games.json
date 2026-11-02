@@ -90,5 +90,13 @@
     {
         "name": "Plants VS Zombies",
         "idname": "pvz"
+    },
+    {
+        "name": "People Playground",
+        "idname": "pp"
+    },
+    {
+        "name": "Mario Kart Wii",
+        "idname": "mkw"
     }
 ]
