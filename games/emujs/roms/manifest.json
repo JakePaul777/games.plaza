@@ -1,0 +1,119 @@
+{
+  "name": "roms",
+  "type": "dir",
+  "children": [
+    {
+      "name": "N64",
+      "type": "dir",
+      "children": [
+        {
+          "name": "Modded",
+          "type": "dir",
+          "children": [
+            {
+              "name": "SM200.z64",
+              "type": "file",
+              "size": 67108864
+            },
+            {
+              "name": "SM64-Stars of the Beast 2.z64",
+              "type": "file",
+              "size": 67108864
+            },
+            {
+              "name": "Sonic 64.z64",
+              "type": "file",
+              "size": 8388608
+            }
+          ]
+        },
+        {
+          "name": "Normal",
+          "type": "dir",
+          "children": [
+            {
+              "name": "Super Mario 64 (US).z64",
+              "type": "file",
+              "size": 8388608
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "NES",
+      "type": "dir",
+      "children": [
+        {
+          "name": "Normal",
+          "type": "dir",
+          "children": [
+            {
+              "name": "Mega Man 2 (U).nes",
+              "type": "file",
+              "size": 262160
+            },
+            {
+              "name": "Super Mario Bros. (World).nes",
+              "type": "file",
+              "size": 40976
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "SNES",
+      "type": "dir",
+      "children": [
+        {
+          "name": "Modded",
+          "type": "dir",
+          "children": [
+            {
+              "name": "Grand Troll World 1.smc",
+              "type": "file",
+              "size": 4194816
+            },
+            {
+              "name": "Mario Turd.smc",
+              "type": "file",
+              "size": 1049088
+            },
+            {
+              "name": "MARIO.smc",
+              "type": "file",
+              "size": 1049088
+            },
+            {
+              "name": "Nameless Kaizo World.smc",
+              "type": "file",
+              "size": 2097664
+            },
+            {
+              "name": "SuperNantucketWorld_011.smc",
+              "type": "file",
+              "size": 2097664
+            },
+            {
+              "name": "The CarlBox v1.1.smc",
+              "type": "file",
+              "size": 2097664
+            }
+          ]
+        },
+        {
+          "name": "Normal",
+          "type": "dir",
+          "children": [
+            {
+              "name": "Super Mario World (U) [!].smc",
+              "type": "file",
+              "size": 524800
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -96,15 +96,23 @@
         "idname": "pp"
     },
     {
-        "name": "Mario Kart Wii",
-        "idname": "mkw"
-    },
-    {
         "name": "Crossy Road",
         "idname": "crossyroad"
     },
     {
         "name": "Candy Crush",
         "idname": "candycrush"
+    },
+    {
+        "name": "Dumb Ways To Die",
+        "idname": "dwtd"
+    },
+    {
+        "name": "Emulator JS",
+        "idname": "emujs"
+    },
+    {
+        "name": "Wordle",
+        "idname": "wordle"
     }
 ]

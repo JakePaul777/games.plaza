@@ -1,32 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Dumb Ways to Die - The Original</title>
-    <link rel="icon" type="image/x-icon" href="media/graphics/icon.ico" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <!-- Use this metatag when Apple fixes their IOS 9
-    <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui"/>
-    -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruffle</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #flash-container {
+      position: relative;
+      background-color: #000000;
+      overflow: hidden;
+      
 
-    <!--Temporary fix for IOS 9-->
-    <meta name="viewport" content="initial-scale=1.0001, minimum-scale=1.0001, maximum-scale=1.0001, user-scalable=no, minimal-ui"/>
+      aspect-ratio: 480 / 320; 
+      
+      width: 100vw;
+      height: 100vh;
+      max-width: calc(100vh * (480 / 320));
+      max-height: calc(100vw * (320 / 480));
+    }
 
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    #flash-container ruffle-player,
+    #flash-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+  </style>
 
-    <link rel="stylesheet" type="text/css" href="game.css">
-    <script type="text/javascript">window.alert=function(){};window.confirm=function(){return!0};window.prompt=function(){return null};</script>
-    <script type="text/javascript" src="game.js"></script>
+  <script src="../../ruffle/ruffle.js"></script>
 </head>
-<body onload="setTimeout(function(){window.scrollTo(0,1)},1);">
-    <!--body-->
-        <div id="ajaxbar">
-            <div id="game"><canvas id="canvas"></canvas></div>
-    
-            <div id="orientate"><img src="media/graphics/orientate/portrait.png" /></div>
-            <div id="play" class="play" onclick=""></div>
-            <!--<img id="scrollDown" width="220" height="277"></img>-->
-    
-        </div>
-        <!-- <div id="tempdiv"><br><br><br></div> -->
-    </body>
+<body>
+
+  <div id="flash-container"></div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const ruffle = window.RufflePlayer.newest();
+      const player = ruffle.createPlayer();
+      const container = document.getElementById("flash-container");
+      
+      container.appendChild(player);
+
+      player.config = {
+        letterbox: "on",
+        forceScale: true,
+        forceAlign: true,
+        scale: "exactFit"
+      };
+
+      player.load("game.swf").then(() => {
+        if (player.metadata && player.metadata.width) {
+          player.style.setProperty("--flash-stage-width", player.metadata.width + "px");
+          player.style.setProperty("--flash-stage-height", player.metadata.height + "px");
+        }
+      });
+    });
+  </script>
+
+</body>
 </html>

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>EmulatorJS</title>
+        <link rel = icon href = docs/favicon.ico sizes = "16x16 32x32 48x48 64x64" type = image/vnd.microsoft.icon>
+        <meta name = viewport content = "width = device-width, initial-scale = 1">
+        <style>
+             body, html {
+                height: 100%;
+                background-color: black;
+                color: white;
+            }
+
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+
+            body, #box, #top {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+            }
+
+            #box {
+                color: #aaa;
+                height: 26em;
+                width: 36em;
+                max-width: 90%;
+                max-height: 70%;
+                background-color: #333;
+                border-radius: 0.4em;
+                border: 2px solid #555;
+                position: relative;
+                flex-direction: column;
+                transition-duration: 0.2s;
+                overflow: hidden;
+                font-family: monospace;
+                font-weight: bold;
+                font-size: 18px;
+                margin: 5px;
+                text-align: center;
+                padding: 10px;
+                box-sizing: border-box;
+            }
+
+            #display {
+                width: 100%;
+                height: 100%
+            }
+
+            select, button {
+                padding: 0.6em 0.4em;
+                margin: 0.5em;
+                width: 15em;
+                max-width: 100%;
+                font-family: monospace;
+                font-weight: bold;
+                font-size: 16px;
+                background-color: #444;
+                color: #aaa;
+                border-radius: 0.4em;
+                border: 1px solid #555;
+                cursor: pointer;
+                transition-duration: 0.2s
+            }
+
+            select:hover, button:hover {
+                background-color: #666;
+                color: #ddd
+            }
+
+            .logo {
+                width: 130px;
+                height: 130px;
+                filter: drop-shadow(0 0 10px white);
+            }
+
+            #top {
+                margin: 5px;
+            }
+
+            /* file browser */
+            #crumbs {
+                width: 100%;
+                text-align: left;
+                font-size: 15px;
+                padding: 0 4px 8px;
+                border-bottom: 1px solid #555;
+                margin-bottom: 6px;
+                word-break: break-all;
+                flex-shrink: 0;
+            }
+
+            #crumbs a {
+                color: #38f;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+            #crumbs a:hover {
+                text-decoration: underline;
+            }
+
+            #list {
+                width: 100%;
+                flex: 1;
+                overflow-y: auto;
+                text-align: left;
+            }
+
+            .item {
+                display: flex;
+                justify-content: space-between;
+                gap: 1em;
+                padding: 0.35em 0.5em;
+                border-radius: 0.3em;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .item:hover {
+                background-color: #555;
+                color: #fff;
+            }
+
+            .item .name {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .item .meta {
+                color: #888;
+                font-size: 13px;
+                flex-shrink: 0;
+                align-self: center;
+            }
+
+            .item.dir .name {
+                color: #8cf;
+            }
+
+            #msg {
+                padding: 1em;
+                color: #aaa;
+                font-weight: normal;
+                font-size: 15px;
+            }
+
+            #footer {
+                width: 100%;
+                flex-shrink: 0;
+                border-top: 1px solid #555;
+                margin-top: 6px;
+                padding-top: 6px;
+                font-size: 13px;
+                position: relative;
+            }
+
+            #footer span {
+                color: #38f;
+                cursor: pointer;
+            }
+
+            #footer span:hover {
+                text-decoration: underline;
+            }
+
+            #input {
+                display: none;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="top">
+            <h1>EmulatorJS Demo</h1>
+            <img src="docs/Logo-light.png" alt="Logo" class="logo">
+            <br>
+        </div>
+        <div id="box">
+            <div id="crumbs"></div>
+            <div id="list"><div id="msg">Loading ROM list...</div></div>
+            <div id="footer">
+                <span id="uploadLink">or load a file from your computer</span>
+                <input type=file id=input>
+            </div>
+        </div>
+
+        <script>
+            let enableDebug = false;
+            let enableThreads = false;
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            if (parseInt(urlParams.get('debug')) === 1 || urlParams.get('debug') === "true") {
+                enableDebug = true;
+                console.log("Debug is enabled");
+            } else {
+                console.log("Debug is disabled");
+            }
+
+            if (parseInt(urlParams.get('threads')) === 1 || urlParams.get('threads') === "true") {
+                if (window.SharedArrayBuffer) {
+                    enableThreads = true;
+                    console.log("Threads are enabled");
+                } else {
+                    console.warn("Threads are disabled as SharedArrayBuffer is not available. Threads requires two headers to be set when sending you html page. See https://stackoverflow.com/a/68630724");
+                    console.log("Threads are disabled");
+                }
+            } else {
+                console.log("Threads are disabled");
+            }
+
+            if (urlParams.get('rom')) {
+                console.log(`Loading ROM from URL: roms/${urlParams.get('rom')}`);
+                run(false, urlParams.get('rom'));
+            }
+
+            async function run(upload, file) {
+                const fileName = upload ? input.files[0].name : file.split("/").pop();
+                const url = upload
+                    ? input.files[0]
+                    : "roms/" + file.split("/").map(encodeURIComponent).join("/");
+                const parts = fileName.split(".");
+
+                const core = await (async (ext) => {
+                    ext = ext.toLowerCase();
+
+                    if (["fds", "nes", "unif", "unf"].includes(ext))
+                        return "nes"
+
+                    if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
+                        return "snes"
+
+                    if (["z64", "n64"].includes(ext))
+                        return "n64"
+
+                    if (["pce"].includes(ext))
+                        return "pce"
+
+                    if (["ngp", "ngc"].includes(ext))
+                        return "ngp"
+
+                    if (["ws", "wsc"].includes(ext))
+                        return "ws"
+
+                    if (["col", "cv"].includes(ext))
+                        return "coleco"
+
+                    if (["d64"].includes(ext))
+                        return "vice_x64sc"
+
+                    if (["nds", "gba", "gb", "z64", "n64"].includes(ext))
+                        return ext
+
+                    return await new Promise(resolve => {
+                        var coreValues = {
+                            "Nintendo 64": "n64",
+                            "Nintendo Game Boy": "gb",
+                            "Nintendo Game Boy Advance": "gba",
+                            "Nintendo DS": "nds",
+                            "Nintendo Entertainment System": "nes",
+                            "Super Nintendo Entertainment System": "snes",
+                            "PlayStation": "psx",
+                            "Virtual Boy": "vb",
+                            "Sega Mega Drive": "segaMD",
+                            "Sega Master System": "segaMS",
+                            "Sega CD": "segaCD",
+                            "Atari Lynx": "lynx",
+                            "Sega 32X": "sega32x",
+                            "Atari Jaguar": "jaguar",
+                            "Sega Game Gear": "segaGG",
+                            "Sega Saturn": "segaSaturn",
+                            "Atari 7800": "atari7800",
+                            "Atari 2600": "atari2600",
+                            "Arcade": "arcade",
+                            "NEC TurboGrafx-16/SuperGrafx/PC Engine": "pce",
+                            "NEC PC-FX": "pcfx",
+                            "SNK NeoGeo Pocket (Color)": "ngp",
+                            "Bandai WonderSwan (Color)": "ws",
+                            "ColecoVision": "coleco",
+                            "Commodore 64": "vice_x64sc",
+                            "Commodore 128": "vice_x128",
+                            "Commodore VIC20": "vice_xvic",
+                            "Commodore Plus/4": "vice_xplus4",
+                            "Commodore PET": "vice_xpet"
+                        }
+
+                        const cores = Object.keys(coreValues).sort().reduce(
+                            (obj, key) => { 
+                                obj[key] = coreValues[key]; 
+                                return obj;
+                            }, 
+                            {}
+                        );
+
+                        const button = document.createElement("button")
+                        const select = document.createElement("select")
+
+                        for (const type in cores) {
+                            const option = document.createElement("option")
+
+                            option.value = cores[type]
+                            option.textContent = type
+                            select.appendChild(option)
+                        }
+
+                        button.onclick = () => resolve(select[select.selectedIndex].value)
+                        button.textContent = "Load game"
+                        box.innerHTML = ""
+
+                        box.appendChild(select)
+                        box.appendChild(button)
+                    })
+                })(parts.length > 1 ? parts.pop() : "")
+
+                const div = document.createElement("div")
+                const sub = document.createElement("div")
+                const script = document.createElement("script")
+
+                sub.id = "game"
+                div.id = "display"
+
+                const top = document.getElementById("top");
+                top.remove();
+                box.remove()
+                div.appendChild(sub)
+                document.body.appendChild(div)
+
+                window.EJS_player = "#game";
+                window.EJS_gameName = parts.join(".");
+                window.EJS_biosUrl = "";
+                window.EJS_gameUrl = url;
+                window.EJS_core = core;
+                window.EJS_pathtodata = "data/";
+                window.EJS_startOnLoaded = true;
+                window.EJS_DEBUG_XX = enableDebug;
+                window.EJS_disableDatabases = true;
+                window.EJS_threads = enableThreads;
+
+                script.src = "data/loader.js";
+                document.body.appendChild(script);
+            }
+
+            // ---------- ROM browser ----------
+            let tree = null;
+            let currentPath = []; // folder names from the root of /roms/
+
+            function findDir(pathArr) {
+                let node = tree;
+                for (const name of pathArr) {
+                    node = (node.children || []).find(c => c.type === "dir" && c.name === name);
+                    if (!node) return null;
+                }
+                return node;
+            }
+
+            function formatSize(bytes) {
+                if (typeof bytes !== "number") return "";
+                if (bytes < 1024) return bytes + " B";
+                if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+                if (bytes < 1073741824) return (bytes / 1048576).toFixed(1) + " MB";
+                return (bytes / 1073741824).toFixed(2) + " GB";
+            }
+
+            function navigate(pathArr) {
+                currentPath = pathArr;
+                const hash = pathArr.length ? "#/" + pathArr.map(encodeURIComponent).join("/") : "";
+                if (location.hash !== hash) history.pushState(null, "", location.pathname + location.search + hash);
+                render();
+            }
+
+            function render() {
+                const crumbs = document.getElementById("crumbs");
+                const list = document.getElementById("list");
+                crumbs.innerHTML = "";
+                list.innerHTML = "";
+
+                let node = findDir(currentPath);
+                if (!node) {
+                    currentPath = [];
+                    node = tree;
+                }
+
+                // breadcrumbs
+                const addCrumb = (label, pathArr) => {
+                    const a = document.createElement("a");
+                    a.textContent = label;
+                    a.onclick = () => navigate(pathArr);
+                    crumbs.appendChild(a);
+                };
+                addCrumb("roms", []);
+                currentPath.forEach((name, i) => {
+                    crumbs.appendChild(document.createTextNode(" / "));
+                    addCrumb(name, currentPath.slice(0, i + 1));
+                });
+
+                // up one level
+                if (currentPath.length) {
+                    const up = document.createElement("div");
+                    up.className = "item dir";
+                    up.innerHTML = '<span class="name">..</span>';
+                    up.onclick = () => navigate(currentPath.slice(0, -1));
+                    list.appendChild(up);
+                }
+
+                const children = node.children || [];
+                if (!children.length) {
+                    const empty = document.createElement("div");
+                    empty.id = "msg";
+                    empty.textContent = "This folder is empty.";
+                    list.appendChild(empty);
+                }
+
+                for (const child of children) {
+                    const row = document.createElement("div");
+                    row.className = "item " + child.type;
+                    const name = document.createElement("span");
+                    name.className = "name";
+                    const meta = document.createElement("span");
+                    meta.className = "meta";
+
+                    if (child.type === "dir") {
+                        name.textContent = "\uD83D\uDCC1 " + child.name;
+                        const n = (child.children || []).length;
+                        meta.textContent = n + (n === 1 ? " item" : " items");
+                        row.onclick = () => navigate(currentPath.concat(child.name));
+                    } else {
+                        name.textContent = child.name;
+                        meta.textContent = formatSize(child.size);
+                        row.onclick = () => run(false, currentPath.concat(child.name).join("/"));
+                    }
+                    name.title = child.name;
+                    row.appendChild(name);
+                    row.appendChild(meta);
+                    list.appendChild(row);
+                }
+            }
+
+            function pathFromHash() {
+                const h = location.hash.replace(/^#\/?/, "");
+                return h ? h.split("/").filter(Boolean).map(decodeURIComponent) : [];
+            }
+
+            async function loadManifest() {
+                const list = document.getElementById("list");
+                try {
+                    const res = await fetch("roms/manifest.json", { cache: "no-cache" });
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+                    tree = await res.json();
+                    currentPath = pathFromHash();
+                    render();
+                } catch (e) {
+                    console.error("Failed to load roms/manifest.json", e);
+                    list.innerHTML = "";
+                    const msg = document.createElement("div");
+                    msg.id = "msg";
+                    msg.textContent = "Couldn't load roms/manifest.json. Run \"python make_manifest.py\" in the site root, then refresh.";
+                    list.appendChild(msg);
+                }
+            }
+
+            window.addEventListener("popstate", () => {
+                if (!tree) return;
+                currentPath = pathFromHash();
+                render();
+            });
+
+            document.getElementById("uploadLink").onclick = () => input.click();
+
+            input.onchange = async () => {
+                run(true);
+            }
+
+            if (!urlParams.get('rom')) loadManifest();
+        </script>
+    </body>
+</html>
