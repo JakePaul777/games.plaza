@@ -1,6 +1,7 @@
 let audio = new Audio("media/hover.wav");
 let audio2 = new Audio("media/stayhover.wav");
 let audio3 = new Audio("media/flip.wav");
+let audio4 = new Audio("media/help.wav");
 let music = new Audio("media/music.wav")
 music.addEventListener('timeupdate', function(){
     let buffer = .44
@@ -9,6 +10,21 @@ music.addEventListener('timeupdate', function(){
         this.play()
     }
 });
+
+let helpwin = document.getElementById("helpwin");
+let helpopen = false;
+function help() {
+    helpopen = !helpopen;
+    if (helpopen) {
+        helpwin.style.display = "flex";
+    }
+    else {
+        helpwin.style.display = "none";
+    }
+    aud = audio4.cloneNode(true)
+    aud.volume = .1;
+    aud.play();
+}
 
 let amount = 18;
 let currentPage = 0;

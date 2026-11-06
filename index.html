@@ -7,13 +7,27 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header><img src="media/logo.png" id="logo"></header>
+    <header>
+        <img src="media/logo.png" id="logo">
+        <img src="media/help.png" id="help" onclick="help()">
+    </header>
     <div id="main">
         <div id="window">
             <button id="prev-btn" class="arrow-btn" onclick="changePage(-1)">&#10094;</button>
             <div id="grid">
             </div>
             <button id="next-btn" class="arrow-btn" onclick="changePage(1)">&#10095;</button>
+        </div>
+        <div id="helpwin">
+            <h1>How To Play</h1>
+            <p1>Just click on the game icon and it will open up the game in a new tab</p1>
+            <h2>It's stuck loading/had an error</h2>
+            <p2>
+                Attempt to refresh the page by pressing "Ctrl+R" or "Ctrl+Shift+R".
+                <br>
+                If it's still broken then IDFK what to tell you. I'm still working on the site so just wait and it might be fixed
+            </p2>
+            <div id="x" onclick="help()">X</div>
         </div>
     </div>
 
