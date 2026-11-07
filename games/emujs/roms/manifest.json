@@ -11,16 +11,6 @@
           "type": "dir",
           "children": [
             {
-              "name": "SM200.z64",
-              "type": "file",
-              "size": 67108864
-            },
-            {
-              "name": "SM64-Stars of the Beast 2.z64",
-              "type": "file",
-              "size": 67108864
-            },
-            {
               "name": "Sonic 64.z64",
               "type": "file",
               "size": 8388608
