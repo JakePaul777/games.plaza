@@ -15,4 +15,9 @@ games/sm64/_deps/libzip-src/
 games/sm64/_deps/imgui-src/
 games/sm64/_deps/gsl-src/
 games/sm64/_deps/dr_libs-src/
-games/sm64/_deps/cimgui-src/
+games/sm64/_deps/cimgui-src/games/baldi/Build/HTML5.data.unityweb
+games/crossyroad/Build/crossy-road.data.unityweb
+games/crossyroad/Build/crossy-road.wasm.unityweb
+games/fred/Build/superfallingfred-webgl-120_23.data.unityweb
+games/pvz/main.pak
+games/surfers/Build/SanFrancisco.data.unityweb
