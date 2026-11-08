@@ -114,5 +114,9 @@
     {
         "name": "Wordle",
         "idname": "wordle"
+    },
+    {
+        "name": "Duck Life",
+        "idname": "ducklife"
     }
 ]

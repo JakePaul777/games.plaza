@@ -39,7 +39,7 @@ function writeFS(path,data){const parts=path.split("/");let d="";for(let i=1;i<p
 async function start(){
   try{
     await window.moduleReadyPromise;
-    writeFS("/main.pak",await fetchBytes("https://pub-ab40aea061ae47be94f2d7e06e4b35b9.r2.dev/main.pak"));
+    writeFS("/main.pak",await fetchBytes("main.pak"));
     const props=await listDirectory("properties");
     if(!props.length)throw new Error("properties/ is empty or can't be listed (add properties/manifest.json)");
     for(const p of props)writeFS("/properties/"+p,await fetchBytes("properties/"+encPath(p)));

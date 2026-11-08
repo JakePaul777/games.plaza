@@ -181,3 +181,22 @@ window.addEventListener('pageshow', function (event) {
         window.location.reload();
     }
 });
+
+
+
+
+
+
+
+function theo() {
+    music.pause();
+    let theoimg = document.createElement("img");
+    theoimg.src = "media/theo.png";
+    theoimg.style = "position: absolute; width: 100%; height:100%"
+    document.body.appendChild(theoimg);
+    let coonshi = document.createElement("audio");
+    coonshi.src = "media/coonshi.mp3";
+    coonshi.loop = true;
+    document.body.appendChild(coonshi);
+    coonshi.play();
+}

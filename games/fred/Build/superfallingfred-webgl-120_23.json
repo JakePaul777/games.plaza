@@ -2,7 +2,7 @@
 "companyName": "Dedalord",
 "productName": "Super Falling Fred",
 "productVersion": "1.2.0",
-"dataUrl": "https://pub-ab40aea061ae47be94f2d7e06e4b35b9.r2.dev/superfallingfred-webgl-120_23.data.unityweb?v=1",
+"dataUrl": "superfallingfred-webgl-120_23.data.unityweb?v=1",
 "wasmCodeUrl": "superfallingfred-webgl-120_23.wasm.code.unityweb?v=1",
 "wasmFrameworkUrl": "superfallingfred-webgl-120_23.wasm.framework.unityweb?v=1",
 "graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
