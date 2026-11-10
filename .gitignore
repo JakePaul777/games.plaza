@@ -1,3 +1,5 @@
+start.bat
+
 games/sm64/TorchExternal/src/TorchExternal-build/_deps/zlib-src/
 games/sm64/TorchExternal/src/TorchExternal-build/_deps/yaml-cpp-src/
 games/sm64/TorchExternal/src/TorchExternal-build/_deps/tinyxml2-src/
