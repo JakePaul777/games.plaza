@@ -10,10 +10,11 @@
   var hw = W / 2, hh = H / 2;
 
   var GRAVITY = data.gravity !== undefined ? parseFloat(data.gravity) : 1400;
-  var RESTITUTION = 0.55;
-  var FRICTION = 0.3;
-  var AIR_DRAG = 0.05;
-  var SPIN_DRAG = 0.15;
+  var RESTITUTION = 0.9;
+  var FRICTION = 0.15;
+  var AIR_DRAG = 0.01;
+  var SPIN_DRAG = 0.04;
+  var REST_SPEED = 40;
   var SPRING_K = 220;
   var SPRING_C = 22;
 
@@ -131,7 +132,8 @@
           if (vn >= 0) continue;
           var rn = k.rx * wall.ny - k.ry * wall.nx;
           var invN = 1 / mass + rn * rn / inertia;
-          var j = -(1 + RESTITUTION) * vn / invN;
+          var e = -vn < REST_SPEED ? 0 : RESTITUTION;
+          var j = -(1 + e) * vn / invN;
           b.vx += wall.nx * j / mass;
           b.vy += wall.ny * j / mass;
           b.w += rn * j / inertia;
@@ -147,6 +149,86 @@
         }
       }
     }
+  }
+
+  function inBox(b, px, py, eps) {
+    var dx = px - b.x, dy = py - b.y;
+    var c = Math.cos(-b.a), s = Math.sin(-b.a);
+    var lx = dx * c - dy * s, ly = dx * s + dy * c;
+    return Math.abs(lx) <= hw + eps && Math.abs(ly) <= hh + eps;
+  }
+
+  function collidePair(A, B) {
+    var dx = B.x - A.x, dy = B.y - A.y;
+    var maxR = Math.sqrt(W * W + H * H);
+    if (dx * dx + dy * dy > maxR * maxR) return;
+
+    var axes = [];
+    [A, B].forEach(function (o) {
+      var c = Math.cos(o.a), s = Math.sin(o.a);
+      axes.push([c, s], [-s, c]);
+    });
+
+    var minOv = Infinity, nx = 0, ny = 0;
+    for (var i = 0; i < axes.length; i++) {
+      var ax = axes[i][0], ay = axes[i][1];
+      var cA = Math.cos(A.a), sA = Math.sin(A.a);
+      var cB = Math.cos(B.a), sB = Math.sin(B.a);
+      var hA = hw * Math.abs(ax * cA + ay * sA) + hh * Math.abs(-ax * sA + ay * cA);
+      var hB = hw * Math.abs(ax * cB + ay * sB) + hh * Math.abs(-ax * sB + ay * cB);
+      var dist = dx * ax + dy * ay;
+      var ov = hA + hB - Math.abs(dist);
+      if (ov <= 0) return;
+      if (ov < minOv) {
+        minOv = ov;
+        var sign = dist >= 0 ? 1 : -1;
+        nx = ax * sign;
+        ny = ay * sign;
+      }
+    }
+
+    var px = 0, py = 0, cnt = 0;
+    [[A, B], [B, A]].forEach(function (pair) {
+      var src = pair[0], dst = pair[1];
+      var c = Math.cos(src.a), s = Math.sin(src.a);
+      [[-hw, -hh], [hw, -hh], [hw, hh], [-hw, hh]].forEach(function (p) {
+        var wx = src.x + p[0] * c - p[1] * s;
+        var wy = src.y + p[0] * s + p[1] * c;
+        if (inBox(dst, wx, wy, 1)) { px += wx; py += wy; cnt++; }
+      });
+    });
+    if (cnt === 0) { px = (A.x + B.x) / 2; py = (A.y + B.y) / 2; }
+    else { px /= cnt; py /= cnt; }
+
+    var push = minOv / 2;
+    A.x -= nx * push; A.y -= ny * push;
+    B.x += nx * push; B.y += ny * push;
+
+    var rAx = px - A.x, rAy = py - A.y;
+    var rBx = px - B.x, rBy = py - B.y;
+    var vAx = A.vx - A.w * rAy, vAy = A.vy + A.w * rAx;
+    var vBx = B.vx - B.w * rBy, vBy = B.vy + B.w * rBx;
+    var rvx = vBx - vAx, rvy = vBy - vAy;
+    var vn = rvx * nx + rvy * ny;
+    if (vn >= 0) return;
+
+    var rAn = rAx * ny - rAy * nx;
+    var rBn = rBx * ny - rBy * nx;
+    var invN = 2 / mass + rAn * rAn / inertia + rBn * rBn / inertia;
+    var e = -vn < REST_SPEED ? 0 : RESTITUTION;
+    var j = -(1 + e) * vn / invN;
+    A.vx -= nx * j / mass; A.vy -= ny * j / mass; A.w -= rAn * j / inertia;
+    B.vx += nx * j / mass; B.vy += ny * j / mass; B.w += rBn * j / inertia;
+
+    var tx = -ny, ty = nx;
+    var vt = rvx * tx + rvy * ty;
+    var rAt = rAx * ty - rAy * tx;
+    var rBt = rBx * ty - rBy * tx;
+    var invT = 2 / mass + rAt * rAt / inertia + rBt * rBt / inertia;
+    var jt = -vt / invT;
+    jt = Math.max(-FRICTION * j, Math.min(FRICTION * j, jt));
+    A.vx -= tx * jt / mass; A.vy -= ty * jt / mass; A.w -= rAt * jt / inertia;
+    B.vx += tx * jt / mass; B.vy += ty * jt / mass; B.w += rBt * jt / inertia;
   }
 
   function step(b, dt) {
@@ -186,10 +268,18 @@
   function frame(now) {
     var frameDt = Math.min((now - last) / 1000, 0.05);
     last = now;
-    var SUB = 4;
-    for (var n = 0; n < bodies.length; n++) {
-      var b = bodies[n];
-      for (var i = 0; i < SUB; i++) step(b, frameDt / SUB);
+    var SUB = 6;
+    for (var i = 0; i < SUB; i++) {
+      for (var n = 0; n < bodies.length; n++) step(bodies[n], frameDt / SUB);
+      for (var p = 0; p < 2; p++) {
+        for (var m = 0; m < bodies.length; m++) {
+          for (var o = m + 1; o < bodies.length; o++) collidePair(bodies[m], bodies[o]);
+        }
+        for (var q = 0; q < bodies.length; q++) collideWalls(bodies[q]);
+      }
+    }
+    for (var n2 = 0; n2 < bodies.length; n2++) {
+      var b = bodies[n2];
       b.el.style.transform =
         'translate(' + b.x + 'px,' + b.y + 'px) rotate(' + b.a + 'rad)';
     }

@@ -1,1 +1,1 @@
-npx http-server -p 443 -S -C cert.pem -K key.pem
+npx http-server -p 6767
