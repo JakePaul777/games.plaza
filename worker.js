@@ -3,37 +3,46 @@ export default {
     const url = new URL(request.url);
     const pathname = url.pathname;
 
-    // 1. Construct paths for part 1 and part 2
-    const part1Url = new URL(request.url);
-    part1Url.pathname = `${pathname}.part001`;
+    const buffers = [];
+    let i = 1;
+    let firstRes = null;
 
-    const part2Url = new URL(request.url);
-    part2Url.pathname = `${pathname}.part002`;
+    // Loop dynamically to check for part001, part002, part003, ... until one is missing
+    while (true) {
+      const partNumStr = String(i).padStart(3, '0');
+      const partUrl = new URL(request.url);
+      partUrl.pathname = `${pathname}.part${partNumStr}`;
 
-    // 2. Try fetching part 1 from your static assets
-    const res1 = await env.ASSETS.fetch(new Request(part1Url, request));
+      const partRes = await env.ASSETS.fetch(new Request(partUrl, request));
 
-    // 3. If part 1 exists, check for and fetch part 2
-    if (res1.ok) {
-      const res2 = await env.ASSETS.fetch(new Request(part2Url, request));
-
-      if (res2.ok) {
-        const buf1 = await res1.arrayBuffer();
-        const buf2 = await res2.arrayBuffer();
-
-        const combinedBlob = new Blob([buf1, buf2]);
-
-        const headers = new Headers(res1.headers);
-        headers.set("Content-Length", combinedBlob.size);
-
-        return new Response(combinedBlob, {
-          status: 200,
-          headers: headers,
-        });
+      // If the part doesn't exist, stop checking
+      if (!partRes.ok) {
+        break;
       }
+
+      // Keep track of the first response to copy its headers later
+      if (i === 1) {
+        firstRes = partRes;
+      }
+
+      buffers.push(await partRes.arrayBuffer());
+      i++;
     }
 
-    // 4. Fallback: If parts don't exist, serve the requested file normally
+    // If parts were found and collected, stitch them together
+    if (buffers.length > 0) {
+      const combinedBlob = new Blob(buffers);
+
+      const headers = new Headers(firstRes.headers);
+      headers.set("Content-Length", combinedBlob.size);
+
+      return new Response(combinedBlob, {
+        status: 200,
+        headers: headers,
+      });
+    }
+
+    // Fallback: If no split parts exist for this file, serve it normally
     return await env.ASSETS.fetch(request);
   },
 };

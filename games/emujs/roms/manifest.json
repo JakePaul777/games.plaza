@@ -3,6 +3,32 @@
   "type": "dir",
   "children": [
     {
+      "name": "DS",
+      "type": "dir",
+      "children": [
+        {
+          "name": "Mario Kart DS (USA) (En,Fr,De,Es,It).nds",
+          "type": "file",
+          "size": 33554432
+        },
+        {
+          "name": "New Super Mario Bros. (USA).nds",
+          "type": "file",
+          "size": 33554432
+        },
+        {
+          "name": "Pokemon - Black Version (USA, Europe) (NDSi Enhanced).nds",
+          "type": "file",
+          "size": 268435456
+        },
+        {
+          "name": "Super Mario 64 DS (USA) (Rev 1).nds",
+          "type": "file",
+          "size": 16777216
+        }
+      ]
+    },
+    {
       "name": "N64",
       "type": "dir",
       "children": [
@@ -22,6 +48,16 @@
           "type": "dir",
           "children": [
             {
+              "name": "Legend of Zelda, The - Ocarina of Time (USA) (Rev 2).z64",
+              "type": "file",
+              "size": 33554432
+            },
+            {
+              "name": "Mario Kart 64 (USA).z64",
+              "type": "file",
+              "size": 12582912
+            },
+            {
               "name": "Super Mario 64 (US).z64",
               "type": "file",
               "size": 8388608
@@ -35,20 +71,24 @@
       "type": "dir",
       "children": [
         {
-          "name": "Normal",
-          "type": "dir",
-          "children": [
-            {
-              "name": "Mega Man 2 (U).nes",
-              "type": "file",
-              "size": 262160
-            },
-            {
-              "name": "Super Mario Bros. (World).nes",
-              "type": "file",
-              "size": 40976
-            }
-          ]
+          "name": "Kirby's Adventure (USA) (Rev 1).nes",
+          "type": "file",
+          "size": 786448
+        },
+        {
+          "name": "Mega Man 2 (U).nes",
+          "type": "file",
+          "size": 262160
+        },
+        {
+          "name": "Super Mario Bros. (World).nes",
+          "type": "file",
+          "size": 40976
+        },
+        {
+          "name": "Super Mario Bros. 3 (USA) (Rev 1).nes",
+          "type": "file",
+          "size": 393232
         }
       ]
     },
@@ -96,6 +136,16 @@
           "name": "Normal",
           "type": "dir",
           "children": [
+            {
+              "name": "Donkey Kong Country (USA) (Rev 2).sfc",
+              "type": "file",
+              "size": 4194304
+            },
+            {
+              "name": "Super Mario Kart (USA).sfc",
+              "type": "file",
+              "size": 524288
+            },
             {
               "name": "Super Mario World (U) [!].smc",
               "type": "file",
