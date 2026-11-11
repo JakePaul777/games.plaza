@@ -1,0 +1,7 @@
+name = "my-static-site"
+compatibility_date = "2026-01-01"
+main = "./worker.js"
+
+[assets]
+directory = "./"           # Or "./dist" depending on where your build output goes
+binding = "ASSETS"        # This explicitly tells Cloudflare to create the env.ASSETS binding
