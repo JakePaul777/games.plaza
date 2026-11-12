@@ -3,7 +3,8 @@
 const ENCODING = "auto";
 
 function typeFor(path) {
-  if (path.endsWith(".wasm.unityweb")) return "application/wasm";
+  // Unity loads .unityweb files as raw buffers, so the wasm type isn't needed.
+  // Keep wasm as octet-stream (same as the data file, which delivers correctly).
   if (path.endsWith(".js.unityweb")) return "application/javascript";
   return "application/octet-stream";
 }
@@ -70,51 +71,38 @@ export default {
       if (ENCODING !== "auto") {
         enc = ENCODING;
       } else {
-        const reader = parts[0].clone().body.getReader();
-        const { value } = await reader.read();
-        reader.cancel();
-        enc = pickEncoding(path, value);
+        const buf = await parts[0].clone().arrayBuffer();
+        enc = pickEncoding(path, new Uint8Array(buf, 0, 4));
       }
     }
 
-    const lengths = parts.map((p) => Number(p.headers.get("Content-Length")));
-    const total = lengths.every((n) => n > 0) ? lengths.reduce((a, b) => a + b, 0) : 0;
-    const headers = buildHeaders(path, enc, 0); // no Content-Length: chunked, avoids any length mismatch
+    // 4. Buffer all parts into one contiguous body up front.
+    // Streaming them lazily caused incomplete chunked transfers (Unity cancels
+    // mid-stream / ASSETS body streams time out). Reading everything eagerly
+    // keeps the response complete and lets us send an accurate Content-Length.
+    const buffers = [];
+    let total = 0;
+    for (const p of parts) {
+      const b = await p.arrayBuffer();
+      buffers.push(b);
+      total += b.byteLength;
+    }
+    // release part responses
+    parts.forEach((p) => p.body?.cancel().catch(() => {}));
+
+    const stitched = new Uint8Array(total);
+    let offset = 0;
+    for (const b of buffers) {
+      stitched.set(new Uint8Array(b), offset);
+      offset += b.byteLength;
+    }
+
+    const headers = buildHeaders(path, enc, total);
 
     if (request.method === "HEAD") {
-      parts.forEach((p) => p.body?.cancel());
       return new Response(null, { status: 200, headers, encodeBody: "manual" });
     }
 
-    // Pull-based stream: reads the next chunk only when the browser wants it.
-    // No background task, so nothing to get cut off when the response returns.
-    let idx = 0;
-    let reader = null;
-    const stitched = new ReadableStream({
-      async pull(controller) {
-        while (true) {
-          if (!reader) {
-            if (idx >= parts.length) {
-              controller.close();
-              return;
-            }
-            reader = parts[idx++].body.getReader();
-          }
-          const { done, value } = await reader.read();
-          if (done) {
-            reader = null;
-            continue;
-          }
-          controller.enqueue(value);
-          return;
-        }
-      },
-      cancel() {
-        parts.forEach((p) => p.body?.cancel().catch(() => {}));
-      },
-    });
-
-    // encodeBody "manual" = bytes are already compressed, send them as-is
     return new Response(stitched, { status: 200, headers, encodeBody: "manual" });
   },
 };
