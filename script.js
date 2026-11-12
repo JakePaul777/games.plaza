@@ -13,8 +13,13 @@ music.addEventListener('timeupdate', function(){
 
 let helpwin = document.getElementById("helpwin");
 let helpopen = false;
+let settingswin = document.getElementById("settingswin");
+let settingsopen = false;
 function help() {
     helpopen = !helpopen;
+    if (helpopen && settingsopen) {
+        settings();
+    }
     if (helpopen) {
         helpwin.style.display = "flex";
     }
@@ -25,10 +30,48 @@ function help() {
     aud.volume = .1;
     aud.play();
 }
+function settings() {
+    settingsopen = !settingsopen;
+    if (helpopen && settingsopen) {
+        help();
+    }
+    if (settingsopen) {
+        settingswin.style.display = "flex";
+    }
+    else {
+        settingswin.style.display = "none";
+    }
+    aud = audio4.cloneNode(true)
+    aud.volume = .1;
+    aud.play();
+}
+
+let setcloak = document.getElementById('set-cloak');
+let favi = document.querySelector("link[rel*='icon']");
+
+favi.href = "favicon2.ico"
+document.title = "Google"
+
+setcloak.onchange = (event) => {
+    let inputText = event.target.value;
+    if (inputText == "none") {
+        favi.href = "favicon.ico";
+        document.title = "games.plaza"
+    }
+    else if (inputText == "google") {
+        favi.href = "favicon2.ico"
+        document.title = "Google"
+    }
+    else if (inputText == "focus") {
+        favi.href = "favicon3.ico"
+        document.title = "Portal"
+    }
+}
 
 let amount = 18;
 let currentPage = 0;
 let games = [];
+window.gameOpen = false;
 
 async function loadGames() {
     let response = await fetch('games.json');
@@ -156,23 +199,26 @@ document.addEventListener("mousemove", (e) => {
   tooltip.style.left = `${x+10}px`;
 });
 
+let gameframe = document.getElementById("gameframe");
+let cover = document.getElementById("cover");
+
 function play(path) {
+    window.gameOpen = true;
     music.pause();
     let zip = new Audio("media/zip.wav");
     zip.volume = .5;
     zip.play();
     document.getElementById("enterbut").style.display = "none";
-    document.getElementById("gobackbut").style.display = "none";
-    let element = document.getElementById("cover");
-    element.style.transition = "opacity .5s"
-    element.style.display = "block";
-    element.style.opacity = '0'
+    cover.style.transition = "opacity .5s"
+    cover.style.display = "block";
+    cover.style.opacity = "0"
     window.requestAnimationFrame(() => {
-        element.style.opacity = '1';
+        cover.style.opacity = "1";
     });
     setTimeout(()=>{
-        window.open(path);
-        document.getElementById("gobackbut").style.display = "block";
+        gameframe.src = path;
+        gameframe.style.opacity = "1";
+        gameframe.style.display = "block";
     }, 300)
 }
 
@@ -182,11 +228,36 @@ window.addEventListener('pageshow', function (event) {
     }
 });
 
+function hotkey(event) {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'f') {
+    event.preventDefault();
+    closegame();
+  }
+}
 
+document.addEventListener('keydown', hotkey, true);
+gameframe.addEventListener('load', () => {
+  try {
+    gameframe.contentWindow.addEventListener('keydown', hotkey, true);
+  } catch (e) {}
+});
 
-
-
-
+function closegame() {
+    window.gameOpen = false
+    gameframe.style.opacity = "0";
+    setTimeout(()=>{
+        gameframe.src = "";
+        gameframe.style.opacity = "1";
+        gameframe.style.display = "none";
+        window.requestAnimationFrame(() => {
+            cover.style.opacity = "0";
+            music.play();
+            setTimeout(()=>{
+                cover.style.display = "none";
+            }, 1000)
+        });
+    }, 100)
+}
 
 function theo() {
     music.pause();

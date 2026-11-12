@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>games.plaza</title>
+    <title></title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="">
 </head>
 <body>
     <header>
-        <img src="media/logo.png" id="logo" onclick="theo()">
-        <img src="media/help.png" id="help" onclick="help()">
+        <img src="media/logo.png" id="logo" onclick="theo()" draggable="false">
+        <img src="media/gear.png" id="gear" onclick="settings()" draggable="false">
+        <img src="media/help.png" id="help" onclick="help()" draggable="false">
     </header>
     <div id="main">
         <div id="window">
@@ -21,13 +23,26 @@
         <div id="helpwin">
             <h1>How To Play</h1>
             <p1>Just click on the game icon and it will open up the game in a new tab</p1>
+            <h2>How do I close the game?</h2>
+            <p2>Press Ctrl+F when a game is open and it will shut down. Feel free to open the site on multiple tabs to have more games running at once.</p2>
             <h2>It's stuck loading/had an error</h2>
-            <p2>
+            <p3>
                 Attempt to refresh the page by pressing "Ctrl+R" or "Ctrl+Shift+R".
                 <br>
                 If it's still broken then IDFK what to tell you. I'm still working on the site so just wait and it might be fixed
-            </p2>
+            </p3>
             <div id="x" onclick="help()">X</div>
+        </div>
+        <div id="settingswin">
+            <div class="setting">
+                <span>Tab Cloak</span>
+                <select id="set-cloak">
+                    <option value="none">None</option>
+                    <option value="google" selected="selected">Google</option>
+                    <option value="focus">Focus Portal</option>
+                </select>
+            </div>
+            <div id="x" onclick="settings()">X</div>
         </div>
     </div>
 
@@ -38,13 +53,8 @@
             setTimeout(()=>{
                 document.getElementById('cover').style.display = 'none';
             }, 1000)">Enter</button>
-        <button id="gobackbut" onclick="
-            document.getElementById('cover').style.opacity=0; 
-            music.play();
-            setTimeout(()=>{
-                document.getElementById('cover').style.display = 'none';
-            }, 1000)">Go Back</button>
     </div>
+    <iframe id="gameframe"></iframe>
     <div id="tooltip"></div>
     <script src="script.js"></script>
     <script src="pig.js"></script>

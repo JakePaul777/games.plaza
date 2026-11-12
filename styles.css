@@ -28,14 +28,24 @@ header {
     margin-left: 10px;
     height: 50px;
 }   
+#gear {
+    margin-left: auto;
+    margin-right: 30px;
+    height: 40px;
+    transition: transform 0.1s;
+    cursor: pointer;
+}
+#gear:hover {
+    transform: scale(1.25);
+}
 #help {
     margin-right: 30px;
     height: 40px;
-    transition: height 0.1s;
+    transition: transform 0.1s;
     cursor: pointer;
 }
 #help:hover {
-    height: 50px;
+    transform: scale(1.25);
 }
 
 #main {
@@ -46,8 +56,8 @@ header {
     padding: 0;
     margin: 0;
 }
- 
-#window, #helpwin {
+
+#window, #helpwin, #settingswin {
     position: absolute;
     inset: 0;
     margin: auto;
@@ -55,7 +65,7 @@ header {
     height: fit-content;
     max-width: 90%;
     box-sizing: border-box;
-    padding: min(3vw, 3vh);
+    padding: min(6vw, 6vh);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -65,11 +75,38 @@ header {
     border-radius: 25px;
 }
 
-#helpwin {
+#helpwin, #settingswin {
     display: none;
     flex-direction: column;
     text-align: center;
 }
+
+#settingswin{
+    width: 50%;
+}
+
+.setting {
+    font-weight: bold;
+    font-size: 20px;
+    white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+select {
+    font-size: 20px;
+    margin:0;
+    border:none;
+    border-radius: 23%;
+    user-select: none;
+    background: none;
+    height:30px;
+}
+select:focus {
+  outline: none;
+}
+
 #x {
     position: absolute;
     left: 95%;
@@ -185,21 +222,13 @@ button{
     transform: translate(-50%, -50%) scale(120%);
 }
 
-#gobackbut {
-    cursor: pointer;
+#gameframe {
+    border: none;
+    margin: 0;
+    padding: 0;
     display: none;
     position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(100%);
-    transition: transform .2s;
-    width: 200px;
-    background: rgb(0,0,0,0);
-    outline: none;
-    font-size: 50px;
-    color:white
-}
-
-#gobackbut:hover {
-    transform: translate(-50%, -50%) scale(120%);
+    width: 100%;
+    height: 100vh;
+    transition: opacity 0.2s;
 }

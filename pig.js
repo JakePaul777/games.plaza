@@ -60,6 +60,7 @@
   });
 
   addEventListener('keydown', function (e) {
+    if (this.window.gameOpen) return;
     if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
     if (e.key.toLowerCase() !== KEY) return;
     var t = e.target;
