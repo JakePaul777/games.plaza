@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ruffle</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #000000;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #flash-container {
+      position: relative;
+      background-color: #000000;
+      overflow: hidden;
+      
+
+      aspect-ratio: 480 / 320; 
+      
+      width: 100vw;
+      height: 100vh;
+      max-width: calc(100vh * (480 / 320));
+      max-height: calc(100vw * (320 / 480));
+    }
+
+    #flash-container ruffle-player,
+    #flash-container canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+  </style>
+
+  <script src="/ruffle/ruffle.js"></script>
+</head>
+<body>
+
+  <div id="flash-container"></div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const ruffle = window.RufflePlayer.newest();
+      const player = ruffle.createPlayer();
+      const container = document.getElementById("flash-container");
+      
+      container.appendChild(player);
+
+      player.config = {
+        letterbox: "on",
+        forceScale: true,
+        forceAlign: true,
+        scale: "exactFit"
+      };
+
+      player.load("game.swf").then(() => {
+        if (player.metadata && player.metadata.width) {
+          player.style.setProperty("--flash-stage-width", player.metadata.width + "px");
+          player.style.setProperty("--flash-stage-height", player.metadata.height + "px");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

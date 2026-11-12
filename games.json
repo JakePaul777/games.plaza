@@ -118,5 +118,13 @@
     {
         "name": "Duck Life",
         "idname": "ducklife"
+    },
+    {
+        "name": "The World's Hardest Game",
+        "idname": "twhg"
+    },
+    {
+        "name": "Friday Night Funkin'",
+        "idname": "fnf"
     }
 ]
