@@ -79,29 +79,42 @@ export default {
 
     const lengths = parts.map((p) => Number(p.headers.get("Content-Length")));
     const total = lengths.every((n) => n > 0) ? lengths.reduce((a, b) => a + b, 0) : 0;
-    const headers = buildHeaders(path, enc, total);
+    const headers = buildHeaders(path, enc, 0); // no Content-Length: chunked, avoids any length mismatch
 
     if (request.method === "HEAD") {
       parts.forEach((p) => p.body?.cancel());
       return new Response(null, { status: 200, headers, encodeBody: "manual" });
     }
 
-    const { readable, writable } = total ? new FixedLengthStream(total) : new TransformStream();
-
-    ctx.waitUntil(
-      (async () => {
-        try {
-          for (const p of parts) {
-            await p.body.pipeTo(writable, { preventClose: true });
+    // Pull-based stream: reads the next chunk only when the browser wants it.
+    // No background task, so nothing to get cut off when the response returns.
+    let idx = 0;
+    let reader = null;
+    const stitched = new ReadableStream({
+      async pull(controller) {
+        while (true) {
+          if (!reader) {
+            if (idx >= parts.length) {
+              controller.close();
+              return;
+            }
+            reader = parts[idx++].body.getReader();
           }
-          await writable.close();
-        } catch (e) {
-          await writable.abort(e);
+          const { done, value } = await reader.read();
+          if (done) {
+            reader = null;
+            continue;
+          }
+          controller.enqueue(value);
+          return;
         }
-      })()
-    );
+      },
+      cancel() {
+        parts.forEach((p) => p.body?.cancel().catch(() => {}));
+      },
+    });
 
     // encodeBody "manual" = bytes are already compressed, send them as-is
-    return new Response(readable, { status: 200, headers, encodeBody: "manual" });
+    return new Response(stitched, { status: 200, headers, encodeBody: "manual" });
   },
 };
