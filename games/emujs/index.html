@@ -234,6 +234,9 @@
                     if (["smc", "fig", "sfc", "gd3", "gd7", "dx2", "bsx", "swc"].includes(ext))
                         return "snes"
 
+		    if (["chd", "cdi", "gdi"].includes(ext))
+                        return "dreamcast"
+
                     if (["z64", "n64"].includes(ext))
                         return "n64"
 
@@ -273,6 +276,7 @@
                             "Atari Jaguar": "jaguar",
                             "Sega Game Gear": "segaGG",
                             "Sega Saturn": "segaSaturn",
+                            "Sega Dreamcast": "dreamcast",
                             "Atari 7800": "atari7800",
                             "Atari 2600": "atari2600",
                             "Arcade": "arcade",

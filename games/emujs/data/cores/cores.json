@@ -676,5 +676,20 @@
         },
         "license": "LICENSE",
         "repo": "https://github.com/EmulatorJS/dosbox-pure"
+    },
+    {
+        "name": "flycast",
+        "extensions": [ "chd", "cdi", "gdi", "cue", "bin", "iso", "m3u", "zip", "7z" ],
+        "makeoptions": {
+            "buildpath": "./",
+            "makescript": "Makefile",
+            "arguments": []
+        },
+        "options": {
+            "defaultWebGL2": true
+        },
+        "save": "srm",
+        "license": "LICENSE",
+        "repo": "https://github.com/EmulatorJS/flycast"
     }
 ]

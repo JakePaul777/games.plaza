@@ -3,6 +3,32 @@
   "type": "dir",
   "children": [
     {
+      "name": "DC",
+      "type": "dir",
+      "children": [
+        {
+          "name": "Jet Grind Radio (USA).chd",
+          "type": "file",
+          "size": 652870822
+        },
+        {
+          "name": "NBA 2K (USA).chd",
+          "type": "file",
+          "size": 471466109
+        },
+        {
+          "name": "Sonic Adventure (USA).chd",
+          "type": "file",
+          "size": 915557486
+        },
+        {
+          "name": "Tony Hawks Pro Skater (USA).chd",
+          "type": "file",
+          "size": 359779476
+        }
+      ]
+    },
+    {
       "name": "DS",
       "type": "dir",
       "children": [

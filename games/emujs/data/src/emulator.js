@@ -30,6 +30,7 @@ class EmulatorJS {
             "atari2600": ["stella2014"],
             "jaguar": ["virtualjaguar"],
             "segaSaturn": ["yabause"],
+            "dreamcast": ["flycast"],
             "amiga": ["puae"],
             "c64": ["vice_x64sc"],
             "c128": ["vice_x128"],
@@ -48,7 +49,7 @@ class EmulatorJS {
         return requiresThreads.includes(core);
     }
     requiresWebGL2(core) {
-        const requiresWebGL2 = ["ppsspp"];
+        const requiresWebGL2 = ["ppsspp", "flycast"];
         return requiresWebGL2.includes(core);
     }
     getCore(generic) {
@@ -918,6 +919,16 @@ class EmulatorJS {
             this.gameManager = new window.EJS_GameManager(this.Module, this);
             await this.gameManager.loadExternalFiles();
             await this.gameManager.mountFileSystems();
+            if (this.getCore() === "flycast") {
+                for (const f of ["dc_boot.bin", "dc_flash.bin"]) {
+                    try {
+                        const res = await this.downloadFile("bios/" + f, null, true, { responseType: "arraybuffer", method: "GET" });
+                        if (res !== -1 && res && res.data) {
+                            this.gameManager.writeFile("/" + f, new Uint8Array(res.data));
+                        }
+                    } catch(e) {}
+                }
+            }
             this.callEvent("saveDatabaseLoaded", this.gameManager.FS);
             if (this.getCore() === "ppsspp") {
                 await this.gameManager.loadPpssppAssets();
