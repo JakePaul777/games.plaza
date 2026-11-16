@@ -1,4 +1,8 @@
 [
+    {
+        "name": "Emulator JS",
+        "idname": "emujs"
+    },
     { 
         "name": "SM64", 
         "idname": "sm64" 
@@ -16,12 +20,8 @@
         "idname": "slope" 
     },
     { 
-        "name": "FNAF1", 
-        "idname": "fnaf1" 
-    },
-    { 
-        "name": "FNAF2", 
-        "idname": "fnaf2" 
+        "name": "FNAF", 
+        "idname": "fnaf" 
     },
     { 
         "name": "Geometry Dash", 
@@ -106,10 +106,6 @@
     {
         "name": "Dumb Ways To Die",
         "idname": "dwtd"
-    },
-    {
-        "name": "Emulator JS",
-        "idname": "emujs"
     },
     {
         "name": "Wordle",
