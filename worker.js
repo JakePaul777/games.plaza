@@ -12,7 +12,7 @@ function typeFor(path) {
 function pickEncoding(path, head) {
   if (!path.endsWith(".unityweb")) return null;
   if (ENCODING !== "auto") return ENCODING;
-  if (head[0] === 0x1f && head[1] === 0x8b) return "gzip";
+  if (head && head[0] === 0x1f && head[1] === 0x8b) return "gzip";
   return null; // Brotli has no magic bytes, so never guess it; set ENCODING = "br" explicitly if needed
 }
 
@@ -23,6 +23,16 @@ function buildHeaders(path, encoding, length) {
   if (length) h.set("Content-Length", String(length));
   h.set("Cache-Control", "public, max-age=3600");
   return h;
+}
+
+// Reads just the first chunk of a stream without buffering the rest.
+// Returns { head, body } where body is the full stream, safe to send.
+async function peekStream(stream) {
+  const [peek, rest] = stream.tee();
+  const reader = peek.getReader();
+  const { value } = await reader.read();
+  reader.cancel().catch(() => {});
+  return { head: value, body: rest };
 }
 
 export default {
@@ -37,64 +47,74 @@ export default {
     // 1. Real file first
     const direct = await env.ASSETS.fetch(request);
     if (direct.status !== 404) {
-      // Unsplit .unityweb files (e.g. framework.js.unityweb) still need the right headers
+      // Unsplit .unityweb files (e.g. framework.js.unityweb) still need the right headers.
+      // Stream the body; only peek at the first bytes to detect gzip.
       if (direct.status === 200 && path.endsWith(".unityweb")) {
-        const buf = await direct.arrayBuffer();
-        const enc = pickEncoding(path, new Uint8Array(buf, 0, 4));
-        return new Response(request.method === "HEAD" ? null : buf, {
+        let enc = ENCODING === "auto" ? null : ENCODING;
+        let body = direct.body;
+
+        if (ENCODING === "auto" && request.method !== "HEAD" && body) {
+          const peeked = await peekStream(body);
+          enc = pickEncoding(path, peeked.head);
+          body = peeked.body;
+        }
+
+        const len = direct.headers.get("content-length");
+        return new Response(request.method === "HEAD" ? null : body, {
           status: 200,
-          headers: buildHeaders(path, enc, buf.byteLength),
+          headers: buildHeaders(path, enc, len ? Number(len) : 0),
           encodeBody: "manual",
         });
       }
       return direct;
     }
 
-    // 2. Look for split parts (clean requests, no conditional/range headers)
-    const parts = [];
+    // 2. Probe split parts with HEAD requests (sizes only, no bodies held open)
+    const partUrls = [];
+    let total = 0;
+    let lengthKnown = true;
     for (let i = 1; i <= 30; i++) {
       const partUrl = new URL(request.url);
       partUrl.pathname = `${path}.part${String(i).padStart(3, "0")}`;
-      const res = await env.ASSETS.fetch(new Request(partUrl));
-      if (!res.ok) {
-        res.body?.cancel();
-        break;
+
+      const head = await env.ASSETS.fetch(new Request(partUrl, { method: "HEAD" }));
+      if (!head.ok) break; // no more parts
+
+      let len = Number(head.headers.get("content-length")) || 0;
+      if (!len) {
+        // Some asset responses omit Content-Length on HEAD; try a GET and drop the body.
+        const probe = await env.ASSETS.fetch(new Request(partUrl));
+        if (!probe.ok) break;
+        len = Number(probe.headers.get("content-length")) || 0;
+        probe.body?.cancel().catch(() => {});
       }
-      parts.push(res);
+
+      partUrls.push(partUrl);
+      if (len) total += len;
+      else lengthKnown = false; // can't promise an exact length; stream without one
     }
 
-    if (parts.length === 0) return direct; // genuine 404
+    if (partUrls.length === 0) return direct; // genuine 404
+    if (!lengthKnown) total = 0; // buildHeaders skips Content-Length when 0
 
-    // 3. Work out encoding from the first few bytes of part 1
+    // 3. Work out encoding from the first few bytes of part 1 (.unityweb only)
     let enc = null;
+    let firstBody = null;
     if (path.endsWith(".unityweb")) {
       if (ENCODING !== "auto") {
         enc = ENCODING;
+      } else if (request.method !== "HEAD") {
+        const firstRes = await env.ASSETS.fetch(new Request(partUrls[0]));
+        const peeked = await peekStream(firstRes.body);
+        enc = pickEncoding(path, peeked.head);
+        firstBody = peeked.body; // reuse for part 1 so it isn't fetched twice
       } else {
-        const buf = await parts[0].clone().arrayBuffer();
-        enc = pickEncoding(path, new Uint8Array(buf, 0, 4));
+        // HEAD: just read a small first chunk and discard it
+        const firstRes = await env.ASSETS.fetch(new Request(partUrls[0]));
+        const peeked = await peekStream(firstRes.body);
+        enc = pickEncoding(path, peeked.head);
+        peeked.body.cancel().catch(() => {});
       }
-    }
-
-    // 4. Buffer all parts into one contiguous body up front.
-    // Streaming them lazily caused incomplete chunked transfers (Unity cancels
-    // mid-stream / ASSETS body streams time out). Reading everything eagerly
-    // keeps the response complete and lets us send an accurate Content-Length.
-    const buffers = [];
-    let total = 0;
-    for (const p of parts) {
-      const b = await p.arrayBuffer();
-      buffers.push(b);
-      total += b.byteLength;
-    }
-    // release part responses
-    parts.forEach((p) => p.body?.cancel().catch(() => {}));
-
-    const stitched = new Uint8Array(total);
-    let offset = 0;
-    for (const b of buffers) {
-      stitched.set(new Uint8Array(b), offset);
-      offset += b.byteLength;
     }
 
     const headers = buildHeaders(path, enc, total);
@@ -103,6 +123,32 @@ export default {
       return new Response(null, { status: 200, headers, encodeBody: "manual" });
     }
 
-    return new Response(stitched, { status: 200, headers, encodeBody: "manual" });
+    // 4. Stream parts back-to-back. Only one part is being read at a time, and
+    // FixedLengthStream gives the client an accurate Content-Length.
+    const { readable, writable } = lengthKnown
+      ? new FixedLengthStream(total)
+      : new TransformStream();
+    ctx.waitUntil(
+      (async () => {
+        try {
+          for (let i = 0; i < partUrls.length; i++) {
+            let body;
+            if (i === 0 && firstBody) {
+              body = firstBody;
+            } else {
+              const res = await env.ASSETS.fetch(new Request(partUrls[i]));
+              if (!res.ok || !res.body) throw new Error(`Part ${i + 1} failed: ${res.status}`);
+              body = res.body;
+            }
+            await body.pipeTo(writable, { preventClose: true });
+          }
+          await writable.close();
+        } catch (err) {
+          await writable.abort(err).catch(() => {});
+        }
+      })()
+    );
+
+    return new Response(readable, { status: 200, headers, encodeBody: "manual" });
   },
 };
