@@ -10,17 +10,22 @@
 <body>
     <header>
         <img src="media/logo.png" id="logo" onclick="theo()" draggable="false">
+        <img src="media/games.png" class="tab" id="tabgames" onclick="changeTab('games')" draggable="false">
+        <img src="media/proxy.png" class="tab" id="tabproxy" onclick="changeTab('proxy')" draggable="false">
         <img src="media/gear.png" id="gear" onclick="settings()" draggable="false">
         <img src="media/help.png" id="help" onclick="help()" draggable="false">
     </header>
     <div id="main">
-        <div id="window">
+        <div class="window" id="windowgames">
             <button id="prev-btn" class="arrow-btn" onclick="changePage(-1)">&#10094;</button>
             <div id="grid">
             </div>
             <button id="next-btn" class="arrow-btn" onclick="changePage(1)">&#10095;</button>
         </div>
-        <div id="helpwin">
+        <div class="window" id="windowproxy">
+            <h1>Hammerhead Browser opened in new tab.</h1>
+        </div>
+        <div class="window" id="helpwin">
             <h1>How To Play</h1>
             <p1>Just click on the game icon and it will open up the game in a new tab</p1>
             <h2>How do I close the game?</h2>
@@ -33,7 +38,7 @@
             </p3>
             <div id="x" onclick="help()">X</div>
         </div>
-        <div id="settingswin">
+        <div class="window" id="settingswin">
             <div class="setting">
                 <span>Tab Cloak</span>
                 <select id="set-cloak">

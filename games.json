@@ -122,5 +122,9 @@
     {
         "name": "Friday Night Funkin'",
         "idname": "fnf"
+    },
+    {
+        "name": "Tiny Fishing",
+        "idname": "tinyfish"
     }
 ]

@@ -68,6 +68,27 @@ setcloak.onchange = (event) => {
     }
 }
 
+let currentTab = 1;
+var tabsArray = ["games", "proxy"];
+var tabsLength = tabsArray.length;
+
+function changeTab(tab) {
+    for (var i = 0; i < tabsLength; i++) {
+        if (tabsArray[i]==tab) {
+            document.getElementById("window"+tabsArray[i]).style.display = "flex";
+            document.getElementById("tab"+tabsArray[i]).style.filter = "brightness(2)";
+            if (tab=="proxy") {
+                window.open("https://gplaza.sytes.net/");
+            }
+        }
+        else {
+            document.getElementById("window"+tabsArray[i]).style.display = "none";
+            document.getElementById("tab"+tabsArray[i]).style.filter = "brightness(1)";
+        }
+    }
+}
+changeTab("games");
+
 let amount = 18;
 let currentPage = 0;
 let games = [];
