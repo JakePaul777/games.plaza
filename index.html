@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
     <link rel="stylesheet" href="styles.css">
@@ -23,7 +25,7 @@
             <button id="next-btn" class="arrow-btn" onclick="changePage(1)">&#10095;</button>
         </div>
         <div class="window" id="windowproxy">
-            <h1>Rammerhead Browser opened in new tab.</h1>
+            <h1>Coming Soon!</h1>
         </div>
         <div class="window" id="helpwin">
             <h1>How To Play</h1>
@@ -43,8 +45,15 @@
                 <span>Tab Cloak</span>
                 <select id="set-cloak">
                     <option value="none">None</option>
-                    <option value="google" selected="selected">Google</option>
+                    <option value="google">Google</option>
                     <option value="focus">Focus Portal</option>
+                </select>
+            </div>
+            <div class="setting">
+                <span>Music</span>
+                <select id="set-music">
+                    <option value="on">On</option>
+                    <option value="off">Off</option>
                 </select>
             </div>
             <div id="x" onclick="settings()">X</div>
@@ -64,7 +73,30 @@
     <script src="script.js"></script>
     <script src="pig.js"></script>
 <script>
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");
+(function () {
+  var FLAG = "root-coi-reloaded";
+  function readFlag() { try { return sessionStorage.getItem(FLAG); } catch (e) { return null; } }
+  function writeFlag() { try { sessionStorage.setItem(FLAG, "1"); return true; } catch (e) { return false; } }
+  function clearFlag() { try { sessionStorage.removeItem(FLAG); } catch (e) {} }
+
+  if (window.crossOriginIsolated) { clearFlag(); return; }
+  if (!("serviceWorker" in navigator)) return;
+  if (readFlag() === "1") return;
+
+  navigator.serviceWorker.register("/sw.js").then(function (reg) {
+    var reload = function () {
+      if (!writeFlag()) return;
+      window.location.replace(window.location.href);
+    };
+    if (reg.active && !navigator.serviceWorker.controller) { reload(); return; }
+    navigator.serviceWorker.addEventListener("controllerchange", reload, { once: true });
+    var w = reg.installing || reg.waiting;
+    if (w && w.state === "installed") w.postMessage({ type: "skip-waiting" });
+    if (w) w.addEventListener("statechange", function () {
+      if (w.state === "installed") w.postMessage({ type: "skip-waiting" });
+    });
+  }).catch(function (e) { console.warn("sw register failed", e); });
+})();
 </script>
 </body>
 </html> 

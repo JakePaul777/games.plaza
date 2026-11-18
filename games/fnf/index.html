@@ -1,24 +1,39 @@
-<h1><a href="vanilla/">Vanilla Game</a></h1>
-<h1><a href="8bitryan/">8 Bit Ryan Mod</a></h1>
-<h2><a href="camellia/">Camellia Mod </a></h2>
-<h2><a href="fnf-soft/">FNF: Soft</a></h2>
-<h1><a href="impostor/">Imposter Mod</a></h1>
-<h2><a href="qt/">QT Mod</a></h2>
-<h2><a href="slenderman/">Slenderman Mod</a></h2>
-<h1><a href="sonic/">Sonic.EXE Mod</a></h1>
-<h2><a href="whitty/">Whitty Mod</a></h2>
+<div>
+<a href="vanilla/">Vanilla Game</a>
+<a href="8bitryan/">8 Bit Ryan Mod</a>
+<a href="camellia/">Camellia Mod </a>
+<a href="fnf-soft/">FNF: Soft</a>
+<a href="impostor/">Imposter Mod</a>
+<a href="qt/">QT Mod</a>
+<a href="slenderman/">Slenderman Mod</a>
+<a href="sonic/">Sonic.EXE Mod</a>
+<a href="whitty/">Whitty Mod</a>
+</div>
 <style>
-
-body {background-color: black;}
-a {
-    display: block;
-    color:white; 
-    font-size: 60px;
-    width: 100%;
-    text-align: center;
+body {
+    background-color: black;
+    margin: 0;
+    overflow: hidden;
 }
 
+div {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.2vh;
+    box-sizing: border-box;
+    padding: 2vh 0;
+}
 
-
-
+a {
+    display: block;
+    color: white; 
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    font-size: clamp(1rem, 6vw, 8vh); 
+    line-height: 1.1;
+}
 </style>

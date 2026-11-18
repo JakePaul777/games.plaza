@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+out/
+*.map
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp
+tmp/
+temp/
+*.tmp
+
+# Build artifacts in game folders
+*.o
+*.a
+*.bak
+*.broken
+**/wadsrc*/
+build.ninja
+.ninja_deps
+.ninja_log
+CMakeCache.txt
+cmake_install.cmake
+zipdir.stamp
+gitinfo.h

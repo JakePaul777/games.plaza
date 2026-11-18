@@ -126,5 +126,9 @@
     {
         "name": "Tiny Fishing",
         "idname": "tinyfish"
+    },
+    {
+        "name": "Doom",
+        "idname": "doom"
     }
 ]

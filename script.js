@@ -11,6 +11,11 @@ music.addEventListener('timeupdate', function(){
     }
 });
 
+let currentSettings = {
+    cloak : "google",
+    music : "on"
+}
+
 let helpwin = document.getElementById("helpwin");
 let helpopen = false;
 let settingswin = document.getElementById("settingswin");
@@ -46,26 +51,55 @@ function settings() {
     aud.play();
 }
 
-let setcloak = document.getElementById('set-cloak');
 let favi = document.querySelector("link[rel*='icon']");
+function changeSettings(key, value) {
+    currentSettings[key] = value;
+    localStorage.setItem("gpSettings", JSON.stringify(currentSettings));
+    if (key == "cloak") {
+        if (value == "none") {
+            favi.href = "favicon.ico";
+            document.title = "games.plaza"
+        }
+        else if (value == "google") {
+            favi.href = "favicon2.ico"
+            document.title = "Google"
+        }
+        else if (value == "focus") {
+            favi.href = "favicon3.ico"
+            document.title = "Portal"
+        }
+    }
+    if (key == "music") {
+        if (value == "on") {
+            music.volume = 1;
+        }
+        else if (value == "off") {
+            music.volume = 0;
+        }
+    }
+}
 
-favi.href = "favicon2.ico"
-document.title = "Google"
+let localSettings = localStorage.getItem("gpSettings");
+if (localSettings) {
+    currentSettings = JSON.parse(localSettings);
+}
+let entries = Object.entries(currentSettings);
+for (var i = 0; i < Object.keys(currentSettings).length; i++) {
+    let [key, value] = entries[i];
+    changeSettings(key, value);
+}
 
+let setcloak = document.getElementById('set-cloak');
+setcloak.value = currentSettings.cloak;
 setcloak.onchange = (event) => {
     let inputText = event.target.value;
-    if (inputText == "none") {
-        favi.href = "favicon.ico";
-        document.title = "games.plaza"
-    }
-    else if (inputText == "google") {
-        favi.href = "favicon2.ico"
-        document.title = "Google"
-    }
-    else if (inputText == "focus") {
-        favi.href = "favicon3.ico"
-        document.title = "Portal"
-    }
+    changeSettings("cloak", inputText)
+}
+let setmusic = document.getElementById('set-music');
+setmusic.value = currentSettings.music;
+setmusic.onchange = (event) => {
+    let inputText = event.target.value;
+    changeSettings("music", inputText)
 }
 
 let currentTab = 1;
@@ -73,13 +107,12 @@ var tabsArray = ["games", "proxy"];
 var tabsLength = tabsArray.length;
 
 function changeTab(tab) {
+    const newUrl = `${window.location.pathname}?tab=${tab}`;
+    window.history.pushState({ tab }, '', newUrl);
     for (var i = 0; i < tabsLength; i++) {
         if (tabsArray[i]==tab) {
             document.getElementById("window"+tabsArray[i]).style.display = "flex";
             document.getElementById("tab"+tabsArray[i]).style.filter = "brightness(2)";
-            if (tab=="proxy") {
-                window.open("https://gplaza.sytes.net/");
-            }
         }
         else {
             document.getElementById("window"+tabsArray[i]).style.display = "none";
@@ -87,7 +120,17 @@ function changeTab(tab) {
         }
     }
 }
-changeTab("games");
+
+window.addEventListener('popstate', (event) => {
+    const params = new URLSearchParams(window.location.search);
+    changeTab(params.get('tab'));
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    let tab = params.get('tab');
+    changeTab(tab ? tab : "games");
+  });
 
 let amount = 18;
 let currentPage = 0;
