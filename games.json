@@ -130,5 +130,9 @@
     {
         "name": "Doom",
         "idname": "doom"
-    }
+    },
+    {
+        "name": "osu!",
+        "idname": "osu"
+    }   
 ]

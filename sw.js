@@ -1,8 +1,19 @@
 const ENCODING = "auto";
 const MAX_PARTS = 30;
+// Cache-busting bucket: rotate every hour so stale cached responses
+// (browser HTTP cache + any Cache API entries) are abandoned and refetched.
+const CACHE_BUCKET_MS = 60 * 60 * 1000;
+function cacheBucket() { return Math.floor(Date.now() / CACHE_BUCKET_MS); }
 
 self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener("activate", (e) => e.waitUntil((async () => {
+  // Drop any previously stored caches so old versions can't linger.
+  try {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+  } catch (e) {}
+  await self.clients.claim();
+})()));
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
@@ -10,7 +21,12 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
   if (req.method !== "GET" && req.method !== "HEAD") return;
   if (url.pathname.includes(".part")) return;
-  event.respondWith(handle(req, url));
+  // Bust the browser HTTP cache by versioning the URL with the current hour bucket.
+  // New bucket => new URL => cache miss => fresh fetch, while old entries go stale.
+  const busted = new URL(url.href);
+  busted.searchParams.set("_v", String(cacheBucket()));
+  const bustedReq = new Request(busted.href, req);
+  event.respondWith(handle(bustedReq, busted));
 });
 
 function withCOI(res) {
@@ -67,7 +83,7 @@ async function findParts(url) {
   let total = 0;
   let known = true;
   for (let i = 1; i <= MAX_PARTS; i++) {
-    const partUrl = `${url.origin}${url.pathname}.part${String(i).padStart(3, "0")}`;
+    const partUrl = `${url.origin}${url.pathname}.part${String(i).padStart(3, "0")}?_v=${cacheBucket()}`;
     const head = await fetch(partUrl, { method: "HEAD" });
     if (!head.ok) break;
     if ((head.headers.get("content-type") || "").includes("text/html")) break;
