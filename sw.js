@@ -21,19 +21,32 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
   if (req.method !== "GET" && req.method !== "HEAD") return;
   if (url.pathname.includes(".part")) return;
+  // Eaglercraft 26.3 (Horizon) shares memory across threads: it needs
+  // COEP "require-corp" instead of the site's usual "credentialless".
   // Bust the browser HTTP cache by versioning the URL with the current hour bucket.
   // New bucket => new URL => cache miss => fresh fetch, while old entries go stale.
   const busted = new URL(url.href);
   busted.searchParams.set("_v", String(cacheBucket()));
-  const bustedReq = new Request(busted.href, req);
+  // `req` may be a navigation request, whose `mode` is "navigate". The
+  // Request constructor rejects "navigate" in RequestInit, so copy only
+  // the safe, transferable fields and let the mode default.
+  const init = {};
+  for (const k of ['method', 'headers', 'credentials', 'cache', 'redirect',
+                   'referrer', 'referrerPolicy', 'integrity', 'keepalive', 'signal']) {
+    if (req[k] !== undefined) init[k] = req[k];
+  }
+  const bustedReq = new Request(busted.href, init);
   event.respondWith(handle(bustedReq, busted));
 });
 
-function withCOI(res) {
+function withCOI(res, url) {
   if (!res || res.status === 0) return res;
+  const gamePath = !!url && (url.pathname === "/games/eagler/26.3" || url.pathname.startsWith("/games/eagler/26.3/"));
+  const coep = gamePath ? "require-corp" : "credentialless";
   const headers = new Headers(res.headers);
   headers.set("Cross-Origin-Opener-Policy", "same-origin");
-  headers.set("Cross-Origin-Embedder-Policy", "credentialless");
+  headers.set("Cross-Origin-Embedder-Policy", coep);
+  if (gamePath) headers.set("Cross-Origin-Resource-Policy", "same-origin");
   return new Response(res.body, { status: res.status, statusText: res.statusText, headers });
 }
 
@@ -140,17 +153,17 @@ async function handle(req, url) {
         enc = isGzip(p.head) ? "gzip" : null;
         body = p.body;
       }
-      return withCOI(build(url, body, Number(direct.headers.get("content-length")) || 0, enc));
+      return withCOI(build(url, body, Number(direct.headers.get("content-length")) || 0, enc), url);
     }
-    return withCOI(direct);
+    return withCOI(direct, url);
   }
 
   const found = await findParts(url);
-  if (!found) return withCOI(direct);
+  if (!found) return withCOI(direct, url);
 
   let enc = null;
   if (isUnity) enc = ENCODING === "auto" ? await sniffUrl(found.urls[0]) : ENCODING;
 
-  if (req.method === "HEAD") return withCOI(build(url, null, found.total, enc));
-  return withCOI(build(url, streamParts(found.urls), found.total, enc));
+  if (req.method === "HEAD") return withCOI(build(url, null, found.total, enc), url);
+  return withCOI(build(url, streamParts(found.urls), found.total, enc), url);
 }

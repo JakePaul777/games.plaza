@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+<meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Horizon</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  body > canvas { display: block; width: 100vw !important; height: 100vh !important; outline: none; }
+  #status {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: #ddd; font: 16px/1.5 system-ui, sans-serif; text-align: center; padding: 16px;
+    pointer-events: none; white-space: pre-line;
+  }
+  #status:empty { display: none; }
+</style>
+</head>
+<body>
+<div id="status">Starting…</div>
+<script type="module">
+// main.js by its content hash (build.json): a cache that kept an older one
+// would pair it with this build's game.
+const files = await fetch("build.json", { cache: "no-store" }).then((r) => r.json()).catch(() => ({}));
+await import(files["main.js"] ? `./main.js?v=${files["main.js"]}` : "./main.js");
+</script>
+<script>
+(async function () {
+  var FLAG = "root-coi-reloaded";
+  function readFlag() { try { return sessionStorage.getItem(FLAG); } catch (e) { return null; } }
+  function writeFlag() { try { sessionStorage.setItem(FLAG, "1"); return true; } catch (e) { return false; } }
+  function clearFlag() { try { sessionStorage.removeItem(FLAG); } catch (e) {} }
+  if (window.crossOriginIsolated) { clearFlag(); return; }
+  if (!("serviceWorker" in navigator)) return;
+  if (readFlag() === "1") return;
+  navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" }).then(function (reg) {
+    var reload = function () {
+      if (!writeFlag()) return;
+      window.location.replace(window.location.href);
+    };
+    if (reg.active && !navigator.serviceWorker.controller) { reload(); return; }
+    navigator.serviceWorker.addEventListener("controllerchange", reload, { once: true });
+    var w = reg.installing || reg.waiting;
+    if (w && w.state === "installed") w.postMessage({ type: "skip-waiting" });
+    if (w) w.addEventListener("statechange", function () {
+      if (w.state === "installed") w.postMessage({ type: "skip-waiting" });
+    });
+  }).catch(function (e) { console.warn("sw register failed", e); });
+})();
+</script>
+</body>
+</html>

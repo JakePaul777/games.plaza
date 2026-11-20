@@ -25,7 +25,7 @@
             <button id="next-btn" class="arrow-btn" onclick="changePage(1)">&#10095;</button>
         </div>
         <div class="window" id="windowproxy">
-            <h1>Coming Soon!</h1>
+            <h1>Proxy opened in new tab! (This may be blocked I still don't know. If it is this also breaks OSU)</h1>
         </div>
         <div class="window" id="helpwin">
             <h1>How To Play</h1>
@@ -82,10 +82,6 @@
 
   if (window.crossOriginIsolated) { clearFlag(); return; }
   if (!("serviceWorker" in navigator)) return;
-
-  // One-time migration for users whose browsers cached the old Cloudflare-worker
-  // combined-file responses: unregister stale service workers and drop old caches
-  // once, so the new sw.js streaming flow takes over cleanly.
   try {
     if (!localStorage.getItem(MIGRATE)) {
       var regs = await navigator.serviceWorker.getRegistrations();

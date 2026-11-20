@@ -119,6 +119,9 @@ function changeTab(tab) {
             document.getElementById("tab"+tabsArray[i]).style.filter = "brightness(1)";
         }
     }
+    if (tab=="proxy") {
+        window.open("https://halcyon-u0wa.onrender.com/");
+    }
 }
 
 window.addEventListener('popstate', (event) => {

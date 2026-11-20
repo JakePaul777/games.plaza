@@ -7,7 +7,6 @@ function combineFiles(partPath) {
     process.exit(1);
   }
 
-  // Match pattern like "john.mp3.part001" to extract the base file name "john.mp3"
   const match = partPath.match(/^(.*)\.part\d+$/);
   if (!match) {
     console.error("Invalid part filename format. Expected something like filename.ext.part001");
@@ -18,9 +17,8 @@ function combineFiles(partPath) {
   const dir = path.dirname(originalFilePath);
   const baseName = path.basename(originalFilePath);
 
-  console.log(`🔍 Looking for parts belonging to: ${baseName}...`);
+  console.log(`Looking for parts belonging to: ${baseName}...`);
 
-  // Gather all parts matching the pattern
   let partIndex = 1;
   const partBuffers = [];
 
@@ -33,7 +31,7 @@ function combineFiles(partPath) {
       partBuffers.push(fs.readFileSync(currentPartPath));
       partIndex++;
     } else {
-      break; // Stop when the next sequential part doesn't exist
+      break;
     }
   }
 
@@ -42,14 +40,12 @@ function combineFiles(partPath) {
     process.exit(1);
   }
 
-  // Combine all buffers into one and write the restored file
   const combinedBuffer = Buffer.concat(partBuffers);
   fs.writeFileSync(originalFilePath, combinedBuffer);
 
-  console.log(`\n✅ Successfully combined ${partBuffers.length} parts into: "${originalFilePath}" (${(combinedBuffer.length / 1024 / 1024).toFixed(2)} MB)`);
+  console.log(`\nSuccessfully combined ${partBuffers.length} parts into: "${originalFilePath}" (${(combinedBuffer.length / 1024 / 1024).toFixed(2)} MB)`);
 }
 
-// Usage: node combine.js john.mp3.part001
 const targetPart = process.argv[2];
 
 if (!targetPart) {

@@ -743,6 +743,17 @@
   }
 
   function bootEngine() {
+    // Cross-origin isolation is required for the engine's shared WebAssembly
+    // memory (pthread workers). Without it, WebAssembly.Memory cannot be
+    // serialized to workers and callMain aborts with "index out of bounds".
+    // Fail early with a clear message instead of a cryptic crash.
+    if (!window.crossOriginIsolated) {
+      console.error('[uzdoom-loader] page is not cross-origin isolated; shared wasm memory unavailable');
+      setStatus('Cross-origin isolation required (COOP/COEP headers). Open this game directly or via a host that sends them.');
+      state.launched = false;
+      $('launchBtn').disabled = false;
+      return;
+    }
     mountFilesystems();
     setStatus('Syncing saves from IndexedDB…');
     FS.syncfs(true, async (err) => {
